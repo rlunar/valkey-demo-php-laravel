@@ -40,3 +40,61 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+// Blog-related interfaces
+export interface BlogData {
+    siteName: string;
+    categories: string[];
+    featuredPost: FeaturedPostData;
+    secondaryPosts: PostCardData[];
+    mainPosts: BlogPostData[];
+    sidebar: SidebarData;
+}
+
+export interface FeaturedPostData {
+    title: string;
+    excerpt: string;
+    readMoreUrl: string;
+}
+
+export interface PostCardData {
+    id: string;
+    title: string;
+    category: string;
+    date: string;
+    excerpt: string;
+    readMoreUrl: string;
+    thumbnailUrl?: string;
+}
+
+export interface BlogPostData {
+    id: string;
+    title: string;
+    author: string;
+    date: string;
+    content: string; // HTML content
+}
+
+export interface SidebarData {
+    aboutText: string;
+    recentPosts: RecentPost[];
+    archives: ArchiveLink[];
+    externalLinks: ExternalLink[];
+}
+
+export interface RecentPost {
+    title: string;
+    date: string;
+    url: string;
+    thumbnailUrl?: string;
+}
+
+export interface ArchiveLink {
+    label: string;
+    url: string;
+}
+
+export interface ExternalLink {
+    label: string;
+    url: string;
+}
