@@ -5,6 +5,7 @@ import BlogNavigation from '@/components/blog-navigation';
 import FeaturedPost from '@/components/featured-post';
 import PostCard from '@/components/post-card';
 import BlogPost from '@/components/blog-post';
+import BlogSidebar from '@/components/blog-sidebar';
 
 interface BlogPageProps {
     blog: BlogData;
@@ -76,95 +77,9 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                         </div>
 
                         {/* Sidebar */}
-                        <aside className="lg:col-span-1">
-                            <div className="sticky top-8 space-y-8">
-                                {/* About Section */}
-                                <div className="bg-gray-50 rounded-lg p-6 dark:bg-gray-800">
-                                    <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-gray-100">
-                                        About
-                                    </h3>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                        {blog.sidebar.aboutText}
-                                    </p>
-                                </div>
-
-                                {/* Recent Posts */}
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
-                                        Recent posts
-                                    </h3>
-                                    <div className="space-y-4">
-                                        {blog.sidebar.recentPosts.map((post, index) => (
-                                            <div key={index} className="flex space-x-3">
-                                                <div className="w-16 h-16 bg-gray-300 rounded flex-shrink-0 dark:bg-gray-600">
-                                                    {post.thumbnailUrl ? (
-                                                        <img
-                                                            src={post.thumbnailUrl}
-                                                            alt={post.title}
-                                                            className="w-full h-full object-cover rounded"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400 rounded">
-                                                            <span className="text-xs">Img</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                        <a href={post.url} className="hover:text-blue-600 dark:hover:text-blue-400">
-                                                            {post.title}
-                                                        </a>
-                                                    </h4>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                        {post.date}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Archives */}
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
-                                        Archives
-                                    </h3>
-                                    <ul className="space-y-2">
-                                        {blog.sidebar.archives.map((archive, index) => (
-                                            <li key={index}>
-                                                <a
-                                                    href={archive.url}
-                                                    className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                                                >
-                                                    {archive.label}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* External Links */}
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
-                                        Elsewhere
-                                    </h3>
-                                    <ul className="space-y-2">
-                                        {blog.sidebar.externalLinks.map((link, index) => (
-                                            <li key={index}>
-                                                <a
-                                                    href={link.url}
-                                                    className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    {link.label}
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </aside>
+                        <div className="lg:col-span-1">
+                            <BlogSidebar sidebar={blog.sidebar} />
+                        </div>
                     </div>
                 </main>
             </div>
