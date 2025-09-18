@@ -7,24 +7,28 @@ A modern Laravel application demonstrating high-performance caching, session man
 This demo showcases four key Valkey use cases:
 
 ### 🗄️ **Cache Management**
+
 - Database query result caching
 - Application-level caching with TTL
 - Cache invalidation strategies
 - Multiple cache stores (database, Redis/Valkey)
 
-### 🔐 **Session Management** 
+### 🔐 **Session Management**
+
 - User session storage in Valkey
 - Secure session handling
 - Session persistence across requests
 - Configurable session lifetime
 
 ### 🏆 **Leaderboard System**
+
 - Real-time scoring and rankings
 - Sorted sets for efficient leaderboards
 - User score tracking and updates
 - Top performers display
 
 ### ⚡ **Queue Processing**
+
 - Background job processing
 - Asynchronous task execution
 - Job batching and retry mechanisms
@@ -75,7 +79,7 @@ REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=null
 
-# Session Configuration  
+# Session Configuration
 SESSION_DRIVER=redis
 SESSION_STORE=redis
 
@@ -107,7 +111,7 @@ composer run dev
 
 # Or start services individually:
 php artisan serve              # Web server
-php artisan queue:work         # Queue worker  
+php artisan queue:work         # Queue worker
 php artisan pail              # Log monitoring
 npm run dev                   # Asset compilation
 ```
@@ -145,21 +149,25 @@ Queue configuration in `config/queue.php`:
 ## 📊 Demo Features
 
 ### Cache Examples
+
 - **Page Caching**: Frequently accessed pages cached for faster loading
 - **Query Caching**: Database query results cached with automatic invalidation
 - **API Response Caching**: External API calls cached to reduce latency
 
 ### Session Examples
+
 - **User Authentication**: Secure login/logout with session persistence
 - **Shopping Cart**: Session-based cart management
 - **User Preferences**: Personalized settings stored in sessions
 
 ### Leaderboard Examples
+
 - **Gaming Scores**: Real-time player rankings
 - **User Activity**: Most active users leaderboard
 - **Performance Metrics**: Top performers by various criteria
 
 ### Queue Examples
+
 - **Email Processing**: Asynchronous email sending
 - **Image Processing**: Background image optimization
 - **Data Import**: Large dataset processing in background
@@ -223,26 +231,28 @@ npm run types
 ### Production Setup
 
 1. **Environment Configuration**:
-   ```bash
-   APP_ENV=production
-   APP_DEBUG=false
-   CACHE_STORE=redis
-   SESSION_DRIVER=redis
-   QUEUE_CONNECTION=redis
-   ```
+
+    ```bash
+    APP_ENV=production
+    APP_DEBUG=false
+    CACHE_STORE=redis
+    SESSION_DRIVER=redis
+    QUEUE_CONNECTION=redis
+    ```
 
 2. **Optimize Application**:
-   ```bash
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
-   npm run build
-   ```
+
+    ```bash
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    npm run build
+    ```
 
 3. **Queue Workers**:
-   ```bash
-   php artisan queue:work --daemon
-   ```
+    ```bash
+    php artisan queue:work --daemon
+    ```
 
 ### Docker Deployment
 
