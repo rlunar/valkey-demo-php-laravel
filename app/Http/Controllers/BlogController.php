@@ -15,7 +15,7 @@ class BlogController extends Controller
         $blogData = $this->getMockBlogData();
 
         return Inertia::render('blog/index', [
-            'blogData' => $blogData,
+            'blog' => $blogData,
         ]);
     }
 

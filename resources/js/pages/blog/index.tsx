@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { BlogData } from '@/types';
 import BlogHeader from '@/components/blog-header';
+import BlogNavigation from '@/components/blog-navigation';
 
 interface BlogPageProps {
     blog: BlogData;
@@ -16,21 +17,10 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                 <BlogHeader siteName={blog.siteName} />
 
                 {/* Blog Navigation */}
-                <nav className="border-b border-gray-200 dark:border-gray-700">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex overflow-x-auto py-2">
-                            {blog.categories.map((category) => (
-                                <a
-                                    key={category}
-                                    href="#"
-                                    className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 whitespace-nowrap dark:text-gray-400 dark:hover:text-gray-100"
-                                >
-                                    {category}
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                </nav>
+                <BlogNavigation
+                    categories={blog.categories}
+                    activeCategory="World" // Default active category - could be dynamic
+                />
 
                 {/* Main Content Area */}
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
