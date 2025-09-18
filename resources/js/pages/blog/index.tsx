@@ -15,9 +15,15 @@ interface BlogPageProps {
 export default function BlogIndex({ blog }: BlogPageProps) {
     return (
         <>
-            <Head title="Blog" />
+            <Head title={`${blog.siteName} - Blog`}>
+                <meta name="description" content="A modern blog built with Laravel, React, and Tailwind CSS" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta property="og:title" content={`${blog.siteName} - Blog`} />
+                <meta property="og:description" content="A modern blog built with Laravel, React, and Tailwind CSS" />
+                <meta property="og:type" content="website" />
+            </Head>
 
-            <div className="min-h-screen bg-white dark:bg-gray-900">
+            <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
                 {/* Blog Header */}
                 <BlogHeader siteName={blog.siteName} />
 
@@ -28,51 +34,76 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                 />
 
                 {/* Main Content Area */}
-                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                        {/* Content Column */}
-                        <div className="lg:col-span-3">
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+                    {/* Desktop and Tablet Layout: Grid with sidebar */}
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+                        {/* Main Content Column */}
+                        <div className="lg:col-span-3 space-y-6 lg:space-y-8">
                             {/* Featured Post Section */}
-                            <section className="mb-8">
-                                <FeaturedPost post={blog.featuredPost} />
-                            </section>
+                            {blog.featuredPost && (
+                                <section aria-labelledby="featured-heading">
+                                    <h2 id="featured-heading" className="sr-only">Featured Post</h2>
+                                    <FeaturedPost post={blog.featuredPost} />
+                                </section>
+                            )}
 
                             {/* Secondary Featured Posts */}
-                            <section className="mb-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {blog.secondaryPosts.map((post) => (
-                                        <PostCard key={post.id} post={post} />
-                                    ))}
-                                </div>
-                            </section>
+                            {blog.secondaryPosts && blog.secondaryPosts.length > 0 && (
+                                <section aria-labelledby="secondary-posts-heading">
+                                    <h2 id="secondary-posts-heading" className="sr-only">Featured Posts</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                        {blog.secondaryPosts.map((post) => (
+                                            <PostCard key={post.id} post={post} />
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
 
                             {/* Main Blog Posts Section */}
-                            <section className="mb-8">
-                                <h2 className="text-2xl font-serif font-bold mb-6 text-gray-900 dark:text-gray-100">
-                                    From the Firehose
-                                </h2>
-                                <div>
-                                    {blog.mainPosts.map((post) => (
-                                        <BlogPost key={post.id} post={post} />
-                                    ))}
-                                </div>
-                            </section>
+                            {blog.mainPosts && blog.mainPosts.length > 0 && (
+                                <section aria-labelledby="main-posts-heading">
+                                    <h2
+                                        id="main-posts-heading"
+                                        className="text-2xl md:text-3xl font-serif font-bold mb-6 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2"
+                                    >
+                                        From the Firehose
+                                    </h2>
+                                    <div className="space-y-6 lg:space-y-8">
+                                        {blog.mainPosts.map((post) => (
+                                            <BlogPost key={post.id} post={post} />
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
 
                             {/* Pagination */}
-                            <BlogPagination
-                                hasOlder={blog.pagination.hasOlder}
-                                hasNewer={blog.pagination.hasNewer}
-                                olderUrl={blog.pagination.olderUrl}
-                                newerUrl={blog.pagination.newerUrl}
-                            />
+                            {blog.pagination && (blog.pagination.hasOlder || blog.pagination.hasNewer) && (
+                                <section aria-label="Blog pagination">
+                                    <BlogPagination
+                                        hasOlder={blog.pagination.hasOlder}
+                                        hasNewer={blog.pagination.hasNewer}
+                                        olderUrl={blog.pagination.olderUrl}
+                                        newerUrl={blog.pagination.newerUrl}
+                                    />
+                                </section>
+                            )}
                         </div>
 
                         {/* Sidebar */}
-                        <div className="lg:col-span-1">
+                        <aside className="lg:col-span-1 order-first lg:order-last">
                             <BlogSidebar sidebar={blog.sidebar} />
-                        </div>
+                        </aside>
                     </div>
                 </main>
+
+                {/* Footer */}
+                <footer className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 mt-12">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+                            <p>&copy; 2024 {blog.siteName}. Built with Laravel, React, and Tailwind CSS.</p>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </>
     );

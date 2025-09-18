@@ -1,4 +1,3 @@
-import React from 'react';
 import { BlogPostData } from '@/types';
 
 interface BlogPostProps {

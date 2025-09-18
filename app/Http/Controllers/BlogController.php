@@ -21,6 +21,7 @@ class BlogController extends Controller
 
     /**
      * Get mock data for the blog page.
+     * In a real application, this would fetch data from a database.
      */
     private function getMockBlogData(): array
     {
@@ -41,93 +42,191 @@ class BlogController extends Controller
                 'Travel'
             ],
             'featuredPost' => [
-                'title' => 'Featured post',
-                'excerpt' => 'This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.',
-                'readMoreUrl' => '#'
+                'title' => 'The Future of Web Development: Trends to Watch in 2024',
+                'excerpt' => 'Explore the latest trends shaping web development, from AI-powered tools to advanced frameworks. This comprehensive guide covers everything you need to know about the evolving landscape of modern web development.',
+                'readMoreUrl' => '/blog/future-web-development-2024'
             ],
             'secondaryPosts' => [
                 [
                     'id' => '1',
-                    'title' => 'Post title',
-                    'category' => 'World',
-                    'date' => 'Nov 12',
-                    'excerpt' => 'This is a wider card with supporting text below as a natural lead-in to additional content.',
-                    'readMoreUrl' => '#',
+                    'title' => 'Building Scalable React Applications',
+                    'category' => 'Technology',
+                    'date' => 'Nov 12, 2024',
+                    'excerpt' => 'Learn best practices for building large-scale React applications that can grow with your team and user base. We\'ll cover architecture patterns, state management, and performance optimization.',
+                    'readMoreUrl' => '/blog/scalable-react-applications',
                     'thumbnailUrl' => null
                 ],
                 [
                     'id' => '2',
-                    'title' => 'Post title',
+                    'title' => 'The Art of Modern CSS Design',
                     'category' => 'Design',
-                    'date' => 'Nov 11',
-                    'excerpt' => 'This is a wider card with supporting text below as a natural lead-in to additional content.',
-                    'readMoreUrl' => '#',
+                    'date' => 'Nov 11, 2024',
+                    'excerpt' => 'Discover how modern CSS features like Grid, Flexbox, and custom properties are revolutionizing web design. Create beautiful, responsive layouts with less code.',
+                    'readMoreUrl' => '/blog/modern-css-design',
                     'thumbnailUrl' => null
                 ]
             ],
             'mainPosts' => [
                 [
                     'id' => '3',
-                    'title' => 'Sample blog post',
-                    'author' => 'Mark',
-                    'date' => 'January 1, 2021',
-                    'content' => '<p>This blog post shows a few different types of content that\'s supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p><hr><p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p><blockquote><p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p></blockquote><p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p><h2>Heading</h2><p>Vivamus sagittis lacus vel augue rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p><h3>Sub-heading</h3><p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p><pre><code>Example code block</code></pre><p>Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p><h3>Sub-heading</h3><p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p><ul><li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li><li>Donec id elit non mi porta gravida at eget metus.</li><li>Nulla vitae elit libero, a pharetra augue.</li></ul><p>Donec ullamcorper nulla non metus auctor fringilla. Nulla vitae elit libero, a pharetra augue.</p><ol><li>Vestibulum id ligula porta felis euismod semper.</li><li>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</li><li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li></ol><p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p>'
+                    'title' => 'Getting Started with Laravel and Inertia.js',
+                    'author' => 'Sarah Johnson',
+                    'date' => '2024-01-15',
+                    'content' => '<p>Laravel and Inertia.js provide a powerful combination for building modern web applications. This comprehensive guide will walk you through setting up your first project and understanding the core concepts.</p>
+
+<h2>What is Inertia.js?</h2>
+<p>Inertia.js is a protocol that allows you to build single-page applications using classic server-side routing and controllers. It works as a glue between your backend framework and your frontend JavaScript framework.</p>
+
+<blockquote>
+<p>Inertia isn\'t a framework, nor is it a replacement for your existing server-side or client-side frameworks. Rather, it\'s designed to work with them. Think of Inertia as glue that connects the two.</p>
+</blockquote>
+
+<h3>Key Benefits</h3>
+<ul>
+<li>No need to build an API for your frontend</li>
+<li>Server-side routing and controllers</li>
+<li>Automatic code splitting</li>
+<li>Built-in progress indicators</li>
+</ul>
+
+<h3>Installation</h3>
+<p>First, install Inertia\'s server-side adapter:</p>
+<pre><code>composer require inertiajs/inertia-laravel</code></pre>
+
+<p>Then publish the Inertia middleware:</p>
+<pre><code>php artisan inertia:middleware</code></pre>
+
+<h2>Setting Up Your First Page</h2>
+<p>Create a controller that returns an Inertia response:</p>
+
+<pre><code>use Inertia\\Inertia;
+
+class DashboardController extends Controller
+{
+    public function index()
+    {
+        return Inertia::render(\'Dashboard\', [
+            \'user\' => auth()->user(),
+            \'stats\' => $this->getStats(),
+        ]);
+    }
+}</code></pre>
+
+<p>This approach gives you the best of both worlds: the simplicity of server-side rendering with the interactivity of a single-page application.</p>'
                 ],
                 [
                     'id' => '4',
-                    'title' => 'Another blog post',
-                    'author' => 'Jacob',
-                    'date' => 'December 23, 2020',
-                    'content' => '<p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p><blockquote><p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p></blockquote><p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p><p>Vivamus sagittis lacus vel augue rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>'
+                    'title' => 'Mastering Tailwind CSS: Advanced Techniques',
+                    'author' => 'Michael Chen',
+                    'date' => '2024-01-10',
+                    'content' => '<p>Tailwind CSS has revolutionized how we approach styling in modern web development. While many developers are familiar with the basics, there are advanced techniques that can significantly improve your workflow and code quality.</p>
+
+<h2>Custom Component Classes</h2>
+<p>One of the most powerful features of Tailwind is the ability to create custom component classes using the <code>@apply</code> directive:</p>
+
+<pre><code>.btn-primary {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+}</code></pre>
+
+<blockquote>
+<p>Use <code>@apply</code> sparingly. Most of the time, it\'s better to use utility classes directly in your HTML for better maintainability.</p>
+</blockquote>
+
+<h3>Dynamic Class Generation</h3>
+<p>Tailwind\'s JIT (Just-In-Time) compiler allows you to generate classes dynamically:</p>
+
+<ol>
+<li>Configure your <code>tailwind.config.js</code> properly</li>
+<li>Use arbitrary value syntax: <code>w-[32rem]</code></li>
+<li>Leverage CSS variables for dynamic values</li>
+</ol>
+
+<p>This flexibility makes Tailwind incredibly powerful for component-based architectures where you need precise control over styling.</p>'
                 ],
                 [
                     'id' => '5',
-                    'title' => 'New feature',
-                    'author' => 'Chris',
-                    'date' => 'December 14, 2020',
-                    'content' => '<p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p><ul><li>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</li><li>Donec id elit non mi porta gravida at eget metus.</li><li>Nulla vitae elit libero, a pharetra augue.</li></ul><p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>'
+                    'title' => 'TypeScript Best Practices for React Development',
+                    'author' => 'Emily Rodriguez',
+                    'date' => '2024-01-05',
+                    'content' => '<p>TypeScript has become an essential tool for React development, providing type safety and better developer experience. Here are some best practices to help you write better TypeScript React code.</p>
+
+<h2>Interface vs Type Aliases</h2>
+<p>When defining component props, prefer interfaces over type aliases for better extensibility:</p>
+
+<pre><code>// Preferred
+interface ButtonProps {
+  variant: \'primary\' | \'secondary\';
+  children: React.ReactNode;
+}
+
+// Less preferred for props
+type ButtonProps = {
+  variant: \'primary\' | \'secondary\';
+  children: React.ReactNode;
+}</code></pre>
+
+<h3>Generic Components</h3>
+<p>Create reusable components with generics for better type safety:</p>
+
+<pre><code>interface ListProps&lt;T&gt; {
+  items: T[];
+  renderItem: (item: T) =&gt; React.ReactNode;
+}
+
+function List&lt;T&gt;({ items, renderItem }: ListProps&lt;T&gt;) {
+  return (
+    &lt;ul&gt;
+      {items.map((item, index) =&gt; (
+        &lt;li key={index}&gt;{renderItem(item)}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+
+<p>These patterns help create more maintainable and type-safe React applications.</p>'
                 ]
             ],
             'sidebar' => [
-                'aboutText' => 'Etiam porta sem malesuada magna mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.',
+                'aboutText' => 'Welcome to Large, a modern blog exploring the latest trends in web development, design, and technology. We share insights, tutorials, and best practices to help developers build better applications.',
                 'recentPosts' => [
                     [
-                        'title' => 'Example blog post',
-                        'date' => 'January 1, 2021',
-                        'url' => '#',
+                        'title' => 'Getting Started with Laravel and Inertia.js',
+                        'date' => 'January 15, 2024',
+                        'url' => '/blog/laravel-inertia-getting-started',
                         'thumbnailUrl' => null
                     ],
                     [
-                        'title' => 'Another blog post',
-                        'date' => 'December 23, 2020',
-                        'url' => '#',
+                        'title' => 'Mastering Tailwind CSS: Advanced Techniques',
+                        'date' => 'January 10, 2024',
+                        'url' => '/blog/tailwind-advanced-techniques',
                         'thumbnailUrl' => null
                     ],
                     [
-                        'title' => 'New feature',
-                        'date' => 'December 14, 2020',
-                        'url' => '#',
+                        'title' => 'TypeScript Best Practices for React Development',
+                        'date' => 'January 5, 2024',
+                        'url' => '/blog/typescript-react-best-practices',
                         'thumbnailUrl' => null
                     ]
                 ],
                 'archives' => [
-                    ['label' => 'March 2021', 'url' => '#'],
-                    ['label' => 'February 2021', 'url' => '#'],
-                    ['label' => 'January 2021', 'url' => '#'],
-                    ['label' => 'December 2020', 'url' => '#'],
-                    ['label' => 'November 2020', 'url' => '#'],
-                    ['label' => 'October 2020', 'url' => '#'],
-                    ['label' => 'September 2020', 'url' => '#'],
-                    ['label' => 'August 2020', 'url' => '#'],
-                    ['label' => 'July 2020', 'url' => '#'],
-                    ['label' => 'June 2020', 'url' => '#'],
-                    ['label' => 'May 2020', 'url' => '#'],
-                    ['label' => 'April 2020', 'url' => '#']
+                    ['label' => 'January 2024', 'url' => '/blog/archive/2024/01'],
+                    ['label' => 'December 2023', 'url' => '/blog/archive/2023/12'],
+                    ['label' => 'November 2023', 'url' => '/blog/archive/2023/11'],
+                    ['label' => 'October 2023', 'url' => '/blog/archive/2023/10'],
+                    ['label' => 'September 2023', 'url' => '/blog/archive/2023/09'],
+                    ['label' => 'August 2023', 'url' => '/blog/archive/2023/08'],
+                    ['label' => 'July 2023', 'url' => '/blog/archive/2023/07'],
+                    ['label' => 'June 2023', 'url' => '/blog/archive/2023/06'],
+                    ['label' => 'May 2023', 'url' => '/blog/archive/2023/05'],
+                    ['label' => 'April 2023', 'url' => '/blog/archive/2023/04'],
+                    ['label' => 'March 2023', 'url' => '/blog/archive/2023/03'],
+                    ['label' => 'February 2023', 'url' => '/blog/archive/2023/02']
                 ],
                 'externalLinks' => [
                     ['label' => 'GitHub', 'url' => 'https://github.com'],
                     ['label' => 'Twitter', 'url' => 'https://twitter.com'],
-                    ['label' => 'Facebook', 'url' => 'https://facebook.com']
+                    ['label' => 'LinkedIn', 'url' => 'https://linkedin.com'],
+                    ['label' => 'Dev.to', 'url' => 'https://dev.to']
                 ]
             ],
             'pagination' => [
