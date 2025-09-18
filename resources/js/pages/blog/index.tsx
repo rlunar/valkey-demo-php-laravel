@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { BlogData } from '@/types';
+import BlogHeader from '@/components/blog-header';
 
 interface BlogPageProps {
     blog: BlogData;
@@ -12,47 +13,7 @@ export default function BlogIndex({ blog }: BlogPageProps) {
 
             <div className="min-h-screen bg-white dark:bg-gray-900">
                 {/* Blog Header */}
-                <header className="border-b border-gray-200 py-3 dark:border-gray-700">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-center justify-between">
-                            {/* Subscribe Link */}
-                            <div className="flex-1">
-                                <a
-                                    href="#"
-                                    className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                                >
-                                    Subscribe
-                                </a>
-                            </div>
-
-                            {/* Site Logo/Title */}
-                            <div className="flex-1 text-center">
-                                <h1 className="text-2xl font-serif font-bold text-gray-900 dark:text-gray-100">
-                                    {blog.siteName}
-                                </h1>
-                            </div>
-
-                            {/* Search and Sign Up */}
-                            <div className="flex-1 flex items-center justify-end space-x-4">
-                                <button
-                                    type="button"
-                                    className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                                    aria-label="Search"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </button>
-                                <a
-                                    href="#"
-                                    className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                                >
-                                    Sign up
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                <BlogHeader siteName={blog.siteName} />
 
                 {/* Blog Navigation */}
                 <nav className="border-b border-gray-200 dark:border-gray-700">
