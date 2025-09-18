@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { BlogData } from '@/types';
 import BlogHeader from '@/components/blog-header';
 import BlogNavigation from '@/components/blog-navigation';
+import FeaturedPost from '@/components/featured-post';
 
 interface BlogPageProps {
     blog: BlogData;
@@ -29,20 +30,7 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                         <div className="lg:col-span-3">
                             {/* Featured Post Section */}
                             <section className="mb-8">
-                                <div className="p-6 md:p-8 rounded-lg bg-gray-100 dark:bg-gray-800">
-                                    <h2 className="text-3xl md:text-4xl font-serif font-bold italic mb-4 text-gray-900 dark:text-gray-100">
-                                        {blog.featuredPost.title}
-                                    </h2>
-                                    <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-                                        {blog.featuredPost.excerpt}
-                                    </p>
-                                    <a
-                                        href={blog.featuredPost.readMoreUrl}
-                                        className="text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300"
-                                    >
-                                        Continue reading...
-                                    </a>
-                                </div>
+                                <FeaturedPost post={blog.featuredPost} />
                             </section>
 
                             {/* Secondary Featured Posts */}
