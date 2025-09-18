@@ -150,3 +150,141 @@
         display: none;
     }
 }
+
+@layer components {
+    /* Blog content typography styles */
+    .blog-content {
+        line-height: 1.7;
+    }
+
+    .blog-content h1,
+    .blog-content h2,
+    .blog-content h3,
+    .blog-content h4,
+    .blog-content h5,
+    .blog-content h6 {
+        @apply font-serif font-bold text-gray-900 dark:text-gray-100 leading-tight;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .blog-content h1 {
+        @apply text-3xl;
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .blog-content h2 {
+        @apply text-2xl;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .blog-content h3 {
+        @apply text-xl;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .blog-content h4 {
+        @apply text-lg;
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .blog-content p {
+        margin-bottom: 1rem;
+        @apply text-gray-700 dark:text-gray-300;
+    }
+
+    .blog-content strong {
+        @apply font-semibold text-gray-900 dark:text-gray-100;
+    }
+
+    .blog-content em {
+        @apply italic text-gray-700 dark:text-gray-300;
+    }
+
+    .blog-content blockquote {
+        @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 py-2 my-4;
+    }
+
+    .blog-content ul,
+    .blog-content ol {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+        @apply text-gray-700 dark:text-gray-300;
+    }
+
+    .blog-content ul {
+        list-style-type: disc;
+    }
+
+    .blog-content ol {
+        list-style-type: decimal;
+    }
+
+    .blog-content li {
+        margin-bottom: 0.25rem;
+    }
+
+    .blog-content li::marker {
+        @apply text-gray-500 dark:text-gray-400;
+    }
+
+    .blog-content table {
+        @apply w-full border-collapse text-sm mb-4;
+    }
+
+    .blog-content th {
+        @apply border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-3 text-left font-semibold text-gray-900 dark:text-gray-100;
+    }
+
+    .blog-content td {
+        @apply border border-gray-300 dark:border-gray-600 p-3 text-gray-700 dark:text-gray-300;
+    }
+
+    .blog-content code {
+        @apply bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 px-1.5 py-0.5 rounded text-sm font-mono;
+    }
+
+    .blog-content pre {
+        @apply bg-gray-900 dark:bg-gray-950 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed mb-4;
+    }
+
+    .blog-content pre code {
+        @apply bg-transparent text-gray-100 p-0;
+    }
+
+    .blog-content a {
+        @apply text-blue-600 dark:text-blue-400 font-medium no-underline hover:underline hover:text-blue-800 dark:hover:text-blue-300;
+    }
+
+    .blog-content img {
+        @apply rounded-lg shadow-sm my-6 max-w-full h-auto;
+    }
+
+    .blog-content hr {
+        @apply border-gray-200 dark:border-gray-700 my-8;
+    }
+
+    /* First paragraph after heading should have no top margin */
+    .blog-content h1 + p,
+    .blog-content h2 + p,
+    .blog-content h3 + p,
+    .blog-content h4 + p,
+    .blog-content h5 + p,
+    .blog-content h6 + p {
+        margin-top: 0;
+    }
+
+    /* Last element should have no bottom margin */
+    .blog-content > *:last-child {
+        margin-bottom: 0;
+    }
+
+    /* First element should have no top margin */
+    .blog-content > *:first-child {
+        margin-top: 0;
+    }
+}

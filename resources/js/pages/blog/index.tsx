@@ -4,6 +4,7 @@ import BlogHeader from '@/components/blog-header';
 import BlogNavigation from '@/components/blog-navigation';
 import FeaturedPost from '@/components/featured-post';
 import PostCard from '@/components/post-card';
+import BlogPost from '@/components/blog-post';
 
 interface BlogPageProps {
     blog: BlogData;
@@ -48,24 +49,9 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                                 <h2 className="text-2xl font-serif font-bold mb-6 text-gray-900 dark:text-gray-100">
                                     From the Firehose
                                 </h2>
-                                <div className="space-y-8">
+                                <div>
                                     {blog.mainPosts.map((post) => (
-                                        <article key={post.id} className="border-b border-gray-200 pb-8 dark:border-gray-700">
-                                            <header className="mb-4">
-                                                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                                                    {post.title}
-                                                </h3>
-                                                <div className="text-sm text-gray-500 dark:text-gray-400">
-                                                    <span>By {post.author}</span>
-                                                    <span className="mx-2">•</span>
-                                                    <span>{post.date}</span>
-                                                </div>
-                                            </header>
-                                            <div
-                                                className="prose prose-gray dark:prose-invert max-w-none"
-                                                dangerouslySetInnerHTML={{ __html: post.content }}
-                                            />
-                                        </article>
+                                        <BlogPost key={post.id} post={post} />
                                     ))}
                                 </div>
                             </section>
