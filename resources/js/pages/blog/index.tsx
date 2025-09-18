@@ -3,6 +3,7 @@ import { BlogData } from '@/types';
 import BlogHeader from '@/components/blog-header';
 import BlogNavigation from '@/components/blog-navigation';
 import FeaturedPost from '@/components/featured-post';
+import PostCard from '@/components/post-card';
 
 interface BlogPageProps {
     blog: BlogData;
@@ -37,45 +38,7 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                             <section className="mb-8">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {blog.secondaryPosts.map((post) => (
-                                        <article
-                                            key={post.id}
-                                            className="flex rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow dark:border-gray-700"
-                                        >
-                                            {/* Thumbnail placeholder - hidden on mobile */}
-                                            <div className="w-48 h-32 bg-gray-300 flex-shrink-0 hidden lg:block dark:bg-gray-600">
-                                                {post.thumbnailUrl ? (
-                                                    <img
-                                                        src={post.thumbnailUrl}
-                                                        alt={post.title}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
-                                                        <span className="text-xs">Image</span>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Content */}
-                                            <div className="flex-1 p-4">
-                                                <div className="mb-2">
-                                                    <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded dark:bg-blue-900 dark:text-blue-200">
-                                                        {post.category}
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-                                                    <a href={post.readMoreUrl} className="hover:text-blue-600 dark:hover:text-blue-400">
-                                                        {post.title}
-                                                    </a>
-                                                </h3>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                                    {post.date}
-                                                </p>
-                                                <p className="text-sm text-gray-600 dark:text-gray-300">
-                                                    {post.excerpt}
-                                                </p>
-                                            </div>
-                                        </article>
+                                        <PostCard key={post.id} post={post} />
                                     ))}
                                 </div>
                             </section>
