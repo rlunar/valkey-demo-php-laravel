@@ -7,21 +7,21 @@ interface FeaturedPostProps {
 
 export default function FeaturedPost({ post }: FeaturedPostProps) {
     return (
-        <article className="p-6 md:p-8 mb-6 rounded-lg bg-gray-100 dark:bg-gray-800">
+        <article className="p-4 sm:p-6 md:p-8 mb-6 rounded-lg bg-gray-100 dark:bg-gray-800">
             <div className="max-w-4xl">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold italic mb-4 text-gray-900 dark:text-gray-100 leading-tight">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold italic mb-4 text-gray-900 dark:text-gray-100 leading-tight">
                     {post.title}
                 </h1>
-                <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
                     {post.excerpt}
                 </p>
                 <Link
                     href={post.readMoreUrl}
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200"
+                    className="inline-flex items-center px-4 py-3 text-sm sm:text-base font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 touch-manipulation min-h-[44px] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400"
                 >
                     Continue reading
                     <svg
-                        className="ml-2 w-4 h-4"
+                        className="ml-2 w-4 h-4 sm:w-5 sm:h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

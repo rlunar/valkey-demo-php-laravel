@@ -21,7 +21,7 @@ export function BlogPagination({
 }: BlogPaginationProps) {
   return (
     <nav
-      className="flex justify-between items-center py-6 border-t border-gray-200 dark:border-gray-700"
+      className="flex justify-between items-center py-4 sm:py-6 border-t border-gray-200 dark:border-gray-700"
       aria-label="Blog pagination"
     >
       <div className="flex-1 flex justify-start">
@@ -32,12 +32,13 @@ export function BlogPagination({
                 variant="outline"
                 size="default"
                 asChild
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 min-h-[44px] px-4 sm:px-6 text-sm sm:text-base touch-manipulation"
                 aria-label="View older posts"
               >
                 <Link href={olderUrl}>
-                  <ChevronLeft className="size-4" />
-                  Older
+                  <ChevronLeft className="size-4 sm:size-5" />
+                  <span className="hidden xs:inline">Older</span>
+                  <span className="xs:hidden">←</span>
                 </Link>
               </Button>
             ) : (
@@ -46,11 +47,12 @@ export function BlogPagination({
                 size="default"
                 onClick={onOlderClick}
                 disabled={!hasOlder}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 min-h-[44px] px-4 sm:px-6 text-sm sm:text-base touch-manipulation"
                 aria-label="View older posts"
               >
-                <ChevronLeft className="size-4" />
-                Older
+                <ChevronLeft className="size-4 sm:size-5" />
+                <span className="hidden xs:inline">Older</span>
+                <span className="xs:hidden">←</span>
               </Button>
             )}
           </>
@@ -65,12 +67,13 @@ export function BlogPagination({
                 variant="outline"
                 size="default"
                 asChild
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 min-h-[44px] px-4 sm:px-6 text-sm sm:text-base touch-manipulation"
                 aria-label="View newer posts"
               >
                 <Link href={newerUrl}>
-                  Newer
-                  <ChevronRight className="size-4" />
+                  <span className="hidden xs:inline">Newer</span>
+                  <span className="xs:hidden">→</span>
+                  <ChevronRight className="size-4 sm:size-5" />
                 </Link>
               </Button>
             ) : (
@@ -79,11 +82,12 @@ export function BlogPagination({
                 size="default"
                 onClick={onNewerClick}
                 disabled={!hasNewer}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 min-h-[44px] px-4 sm:px-6 text-sm sm:text-base touch-manipulation"
                 aria-label="View newer posts"
               >
-                Newer
-                <ChevronRight className="size-4" />
+                <span className="hidden xs:inline">Newer</span>
+                <span className="xs:hidden">→</span>
+                <ChevronRight className="size-4 sm:size-5" />
               </Button>
             )}
           </>

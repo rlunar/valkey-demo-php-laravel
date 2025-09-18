@@ -156,6 +156,114 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
     }
+
+    .line-clamp-3 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
+
+    /* Touch-friendly utilities */
+    .touch-manipulation {
+        touch-action: manipulation;
+    }
+
+    /* Responsive text utilities */
+    .text-responsive-sm {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
+
+    @media (min-width: 640px) {
+        .text-responsive-sm {
+            font-size: 1rem;
+            line-height: 1.5rem;
+        }
+    }
+
+    .text-responsive-base {
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .text-responsive-base {
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+        }
+    }
+
+    /* Responsive spacing utilities */
+    .space-y-responsive > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 1rem;
+    }
+
+    @media (min-width: 640px) {
+        .space-y-responsive > :not([hidden]) ~ :not([hidden]) {
+            margin-top: 1.5rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .space-y-responsive > :not([hidden]) ~ :not([hidden]) {
+            margin-top: 2rem;
+        }
+    }
+
+    /* Mobile-first responsive breakpoints */
+    .xs\:hidden {
+        display: none;
+    }
+
+    @media (min-width: 475px) {
+        .xs\:inline {
+            display: inline;
+        }
+
+        .xs\:hidden {
+            display: revert;
+        }
+    }
+
+    /* Improved focus styles for mobile */
+    .focus-visible\:ring-2:focus-visible {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px var(--ring);
+    }
+
+    /* Better tap targets */
+    .tap-target {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Smooth scrolling for navigation */
+    .scroll-smooth {
+        scroll-behavior: smooth;
+    }
+
+    /* Prevent horizontal scroll on mobile */
+    .overflow-x-hidden {
+        overflow-x: hidden;
+    }
+
+    /* Mobile-optimized text selection */
+    .select-text {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        user-select: text;
+    }
+
+    .select-none {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
 }
 
 @layer components {
@@ -176,32 +284,65 @@
     }
 
     .blog-content h1 {
-        @apply text-3xl;
-        margin-top: 2.5rem;
-        margin-bottom: 1.25rem;
-    }
-
-    .blog-content h2 {
-        @apply text-2xl;
+        @apply text-2xl sm:text-3xl;
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
 
-    .blog-content h3 {
-        @apply text-xl;
+    @media (min-width: 640px) {
+        .blog-content h1 {
+            margin-top: 2.5rem;
+            margin-bottom: 1.25rem;
+        }
+    }
+
+    .blog-content h2 {
+        @apply text-xl sm:text-2xl;
         margin-top: 1.5rem;
         margin-bottom: 0.75rem;
     }
 
-    .blog-content h4 {
-        @apply text-lg;
+    @media (min-width: 640px) {
+        .blog-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+    }
+
+    .blog-content h3 {
+        @apply text-lg sm:text-xl;
         margin-top: 1.25rem;
         margin-bottom: 0.5rem;
     }
 
+    @media (min-width: 640px) {
+        .blog-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    .blog-content h4 {
+        @apply text-base sm:text-lg;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .blog-content h4 {
+            margin-top: 1.25rem;
+        }
+    }
+
     .blog-content p {
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         @apply text-gray-700 dark:text-gray-300;
+    }
+
+    @media (min-width: 640px) {
+        .blog-content p {
+            margin-bottom: 1rem;
+        }
     }
 
     .blog-content strong {
@@ -218,9 +359,17 @@
 
     .blog-content ul,
     .blog-content ol {
-        margin-bottom: 1rem;
-        padding-left: 1.5rem;
+        margin-bottom: 0.75rem;
+        padding-left: 1.25rem;
         @apply text-gray-700 dark:text-gray-300;
+    }
+
+    @media (min-width: 640px) {
+        .blog-content ul,
+        .blog-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
     }
 
     .blog-content ul {
@@ -240,15 +389,25 @@
     }
 
     .blog-content table {
-        @apply w-full border-collapse text-sm mb-4;
+        @apply w-full border-collapse text-xs sm:text-sm mb-3 sm:mb-4;
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+    }
+
+    @media (min-width: 640px) {
+        .blog-content table {
+            display: table;
+            white-space: normal;
+        }
     }
 
     .blog-content th {
-        @apply border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-3 text-left font-semibold text-gray-900 dark:text-gray-100;
+        @apply border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 p-2 sm:p-3 text-left font-semibold text-gray-900 dark:text-gray-100;
     }
 
     .blog-content td {
-        @apply border border-gray-300 dark:border-gray-600 p-3 text-gray-700 dark:text-gray-300;
+        @apply border border-gray-300 dark:border-gray-600 p-2 sm:p-3 text-gray-700 dark:text-gray-300;
     }
 
     .blog-content code {
@@ -268,7 +427,18 @@
     }
 
     .blog-content img {
-        @apply rounded-lg shadow-sm my-6 max-w-full h-auto;
+        @apply rounded-lg shadow-sm my-4 sm:my-6 max-w-full h-auto;
+        width: 100%;
+        height: auto;
+    }
+
+    /* Responsive image container */
+    .blog-content figure {
+        @apply my-4 sm:my-6;
+    }
+
+    .blog-content figure img {
+        @apply mx-auto;
     }
 
     .blog-content hr {

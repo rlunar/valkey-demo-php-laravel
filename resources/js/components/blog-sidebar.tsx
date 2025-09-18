@@ -15,15 +15,15 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
       <div className="lg:hidden mb-4">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between p-3 text-left bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-blue-400"
+          className="w-full flex items-center justify-between p-3 sm:p-4 text-left bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-blue-400 touch-manipulation min-h-[44px]"
           aria-expanded={isOpen}
           aria-controls="sidebar-content"
         >
-          <span className="font-medium text-gray-900 dark:text-gray-100">
+          <span className="font-medium text-gray-900 dark:text-gray-100 text-base sm:text-lg">
             Sidebar
           </span>
           <svg
-            className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+            className={`w-5 h-5 sm:w-6 sm:h-6 text-gray-500 transition-transform duration-200 ${
               isOpen ? 'rotate-180' : ''
             }`}
             fill="none"
@@ -49,11 +49,11 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
         } lg:block`}
       >
         {/* About Section */}
-        <section className="bg-gray-50 p-4 rounded-lg dark:bg-gray-800">
-          <h2 className="text-lg font-semibold text-gray-900 mb-3 dark:text-gray-100">
+        <section className="bg-gray-50 p-4 sm:p-5 rounded-lg dark:bg-gray-800">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 dark:text-gray-100">
             About
           </h2>
-          <p className="text-sm text-gray-600 leading-relaxed dark:text-gray-300">
+          <p className="text-sm sm:text-base text-gray-600 leading-relaxed dark:text-gray-300">
             {sidebar.aboutText}
           </p>
         </section>
@@ -61,24 +61,26 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
         {/* Recent Posts Section */}
         {sidebar.recentPosts.length > 0 && (
           <section>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 dark:text-gray-100">
               Recent posts
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {sidebar.recentPosts.map((post, index) => (
-                <article key={index} className="flex space-x-3">
+                <article key={index} className="flex space-x-3 sm:space-x-4">
                   {/* Thumbnail placeholder */}
-                  <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden dark:bg-gray-700">
+                  <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 rounded-lg overflow-hidden dark:bg-gray-700">
                     {post.thumbnailUrl ? (
                       <img
                         src={post.thumbnailUrl}
                         alt=""
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        sizes="(max-width: 640px) 64px, 80px"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <svg
-                          className="w-6 h-6 text-gray-400 dark:text-gray-500"
+                          className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 dark:text-gray-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -97,17 +99,17 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
 
                   {/* Post info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <h3 className="text-sm sm:text-base font-medium text-gray-900 dark:text-gray-100">
                       <Link
                         href={post.url}
-                        className="hover:text-blue-600 transition-colors duration-200 dark:hover:text-blue-400"
+                        className="hover:text-blue-600 transition-colors duration-200 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-sm dark:focus:ring-blue-400"
                       >
                         <span className="line-clamp-2">
                           {post.title}
                         </span>
                       </Link>
                     </h3>
-                    <time className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
+                    <time className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 block">
                       {post.date}
                     </time>
                   </div>
@@ -120,16 +122,16 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
         {/* Archives Section */}
         {sidebar.archives.length > 0 && (
           <section>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 dark:text-gray-100">
               Archives
             </h2>
             <nav aria-label="Archive navigation">
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {sidebar.archives.map((archive, index) => (
                   <li key={index}>
                     <Link
                       href={archive.url}
-                      className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 dark:text-blue-400 dark:hover:text-blue-300"
+                      className="inline-block text-sm sm:text-base text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 dark:text-blue-400 dark:hover:text-blue-300 py-1 touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-sm dark:focus:ring-blue-400"
                     >
                       {archive.label}
                     </Link>
@@ -143,22 +145,22 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
         {/* External Links Section */}
         {sidebar.externalLinks.length > 0 && (
           <section>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 dark:text-gray-100">
               Elsewhere
             </h2>
             <nav aria-label="External links">
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {sidebar.externalLinks.map((link, index) => (
                   <li key={index}>
                     <a
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 dark:text-blue-400 dark:hover:text-blue-300"
+                      className="inline-flex items-center text-sm sm:text-base text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 dark:text-blue-400 dark:hover:text-blue-300 py-1 touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-sm dark:focus:ring-blue-400"
                     >
                       {link.label}
                       <svg
-                        className="ml-1 w-3 h-3"
+                        className="ml-1 w-3 h-3 sm:w-4 sm:h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

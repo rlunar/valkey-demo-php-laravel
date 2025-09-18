@@ -34,11 +34,11 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                 />
 
                 {/* Main Content Area */}
-                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-                    {/* Desktop and Tablet Layout: Grid with sidebar */}
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+                    {/* Responsive Layout: Stack on mobile, grid on desktop */}
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                         {/* Main Content Column */}
-                        <div className="lg:col-span-3 space-y-6 lg:space-y-8">
+                        <div className="lg:col-span-3 space-y-4 sm:space-y-6 lg:space-y-8">
                             {/* Featured Post Section */}
                             {blog.featuredPost && (
                                 <section aria-labelledby="featured-heading">
@@ -51,7 +51,7 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                             {blog.secondaryPosts && blog.secondaryPosts.length > 0 && (
                                 <section aria-labelledby="secondary-posts-heading">
                                     <h2 id="secondary-posts-heading" className="sr-only">Featured Posts</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                         {blog.secondaryPosts.map((post) => (
                                             <PostCard key={post.id} post={post} />
                                         ))}
@@ -64,11 +64,11 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                                 <section aria-labelledby="main-posts-heading">
                                     <h2
                                         id="main-posts-heading"
-                                        className="text-2xl md:text-3xl font-serif font-bold mb-6 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2"
+                                        className="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2"
                                     >
                                         From the Firehose
                                     </h2>
-                                    <div className="space-y-6 lg:space-y-8">
+                                    <div className="space-y-4 sm:space-y-6 lg:space-y-8">
                                         {blog.mainPosts.map((post) => (
                                             <BlogPost key={post.id} post={post} />
                                         ))}
@@ -97,9 +97,9 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                 </main>
 
                 {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 mt-12">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                        <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+                <footer className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 mt-8 sm:mt-12">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                        <div className="text-center text-sm sm:text-base text-gray-600 dark:text-gray-400">
                             <p>&copy; 2024 {blog.siteName}. Built with Laravel, React, and Tailwind CSS.</p>
                         </div>
                     </div>
