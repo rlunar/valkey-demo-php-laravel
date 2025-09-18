@@ -129,6 +129,12 @@ class BlogController extends Controller
                     ['label' => 'Twitter', 'url' => 'https://twitter.com'],
                     ['label' => 'Facebook', 'url' => 'https://facebook.com']
                 ]
+            ],
+            'pagination' => [
+                'hasOlder' => true,
+                'hasNewer' => false,
+                'olderUrl' => '/blog?page=2',
+                'newerUrl' => null
             ]
         ];
     }

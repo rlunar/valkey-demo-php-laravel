@@ -49,6 +49,7 @@ export interface BlogData {
     secondaryPosts: PostCardData[];
     mainPosts: BlogPostData[];
     sidebar: SidebarData;
+    pagination: BlogPaginationData;
 }
 
 export interface FeaturedPostData {
@@ -97,4 +98,11 @@ export interface ArchiveLink {
 export interface ExternalLink {
     label: string;
     url: string;
+}
+
+export interface BlogPaginationData {
+    hasOlder: boolean;
+    hasNewer: boolean;
+    olderUrl?: string;
+    newerUrl?: string;
 }
