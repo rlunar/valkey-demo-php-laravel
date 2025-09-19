@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { SidebarData } from '@/types';
+import LazyImage from '@/components/lazy-image';
 
 interface BlogSidebarProps {
   sidebar: SidebarData;
@@ -81,18 +82,18 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
             <div className="space-y-4" role="list">
               {sidebar.recentPosts.map((post, index) => (
                 <article key={index} className="flex space-x-3 sm:space-x-4" role="listitem">
-                  {/* Thumbnail placeholder */}
-                  <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 rounded-lg overflow-hidden dark:bg-gray-700">
+                  {/* Thumbnail with lazy loading */}
+                  <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden">
                     {post.thumbnailUrl ? (
-                      <img
+                      <LazyImage
                         src={post.thumbnailUrl}
                         alt={`Thumbnail for ${post.title}`}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        sizes="(max-width: 640px) 64px, 80px"
+                        className="w-full h-full bg-gray-200 dark:bg-gray-700"
+                        width={80}
+                        height={80}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center" aria-label="No image available">
+                      <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center" aria-label="No image available">
                         <svg
                           className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 dark:text-gray-500"
                           fill="none"

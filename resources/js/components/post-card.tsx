@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { PostCardData } from '@/types';
+import LazyImage from '@/components/lazy-image';
 
 interface PostCardProps {
   post: PostCardData;
@@ -35,17 +36,15 @@ export default function PostCard({ post }: PostCardProps) {
       className="flex flex-col sm:flex-row rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 dark:border-gray-700 dark:bg-gray-800"
       aria-labelledby={`post-card-title-${post.id}`}
     >
-      {/* Thumbnail - responsive sizing */}
+      {/* Thumbnail - responsive sizing with lazy loading */}
       {post.thumbnailUrl && (
-        <div className="w-full h-48 sm:w-48 sm:h-32 md:w-56 md:h-36 bg-gray-300 flex-shrink-0 dark:bg-gray-600">
-          <img
-            src={post.thumbnailUrl}
-            alt={`Thumbnail for ${post.title}`}
-            className="w-full h-full object-cover"
-            loading="lazy"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 192px, 224px"
-          />
-        </div>
+        <LazyImage
+          src={post.thumbnailUrl}
+          alt={`Thumbnail for ${post.title}`}
+          className="w-full h-48 sm:w-48 sm:h-32 md:w-56 md:h-36 bg-gray-300 flex-shrink-0 dark:bg-gray-600"
+          width={224}
+          height={144}
+        />
       )}
 
       {/* Content */}
