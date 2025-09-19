@@ -7,9 +7,16 @@ interface FeaturedPostProps {
 
 export default function FeaturedPost({ post }: FeaturedPostProps) {
     return (
-        <article className="p-4 sm:p-6 md:p-8 mb-6 rounded-lg bg-gray-100 dark:bg-gray-800">
+        <article
+            className="p-4 sm:p-6 md:p-8 mb-6 rounded-lg bg-gray-100 dark:bg-gray-800"
+            aria-labelledby="featured-post-title"
+            role="article"
+        >
             <div className="max-w-4xl">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold italic mb-4 text-gray-900 dark:text-gray-100 leading-tight">
+                <h1
+                    id="featured-post-title"
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold italic mb-4 text-gray-900 dark:text-gray-100 leading-tight"
+                >
                     {post.title}
                 </h1>
                 <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
@@ -17,7 +24,8 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
                 </p>
                 <Link
                     href={post.readMoreUrl}
-                    className="inline-flex items-center px-4 py-3 text-sm sm:text-base font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 touch-manipulation min-h-[44px] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400"
+                    className="inline-flex items-center px-4 py-3 text-sm sm:text-base font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200 touch-manipulation min-h-[44px] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-800"
+                    aria-label={`Continue reading: ${post.title}`}
                 >
                     Continue reading
                     <svg
@@ -26,6 +34,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
                     >
                         <path
                             strokeLinecap="round"

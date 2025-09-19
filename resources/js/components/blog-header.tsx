@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface BlogHeaderProps {
     siteName: string;
 }
@@ -13,7 +11,7 @@ export default function BlogHeader({ siteName }: BlogHeaderProps) {
                     <div className="flex-1">
                         <a
                             href="#"
-                            className="inline-block text-sm sm:text-base font-medium text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-2 -mx-2 -my-2 touch-manipulation dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-blue-400"
+                            className="inline-block text-sm sm:text-base font-medium text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-2 -mx-2 -my-2 touch-manipulation dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
                             aria-label="Subscribe to newsletter"
                         >
                             Subscribe
@@ -25,7 +23,7 @@ export default function BlogHeader({ siteName }: BlogHeaderProps) {
                         <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-gray-900 dark:text-gray-100 leading-tight">
                             <a
                                 href="/blog"
-                                className="hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1 -mx-2 -my-1 touch-manipulation dark:hover:text-gray-300 dark:focus:ring-blue-400"
+                                className="hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1 -mx-2 -my-1 touch-manipulation dark:hover:text-gray-300 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
                                 aria-label={`${siteName} - Home`}
                             >
                                 {siteName}
@@ -37,7 +35,7 @@ export default function BlogHeader({ siteName }: BlogHeaderProps) {
                     <div className="flex-1 flex items-center justify-end space-x-2 sm:space-x-4">
                         <button
                             type="button"
-                            className="text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md p-2 touch-manipulation dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-blue-400"
+                            className="text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md p-2 touch-manipulation dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
                             aria-label="Search"
                         >
                             <svg
@@ -57,7 +55,7 @@ export default function BlogHeader({ siteName }: BlogHeaderProps) {
                         </button>
                         <a
                             href="#"
-                            className="inline-block text-sm sm:text-base font-medium text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-2 -mx-2 -my-2 touch-manipulation dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-blue-400"
+                            className="inline-block text-sm sm:text-base font-medium text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-2 -mx-2 -my-2 touch-manipulation dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
                             aria-label="Sign up for account"
                         >
                             Sign up

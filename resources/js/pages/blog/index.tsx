@@ -24,6 +24,14 @@ export default function BlogIndex({ blog }: BlogPageProps) {
             </Head>
 
             <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
+                {/* Skip Navigation Link */}
+                <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    Skip to main content
+                </a>
+
                 {/* Blog Header */}
                 <BlogHeader siteName={blog.siteName} />
 
@@ -34,7 +42,12 @@ export default function BlogIndex({ blog }: BlogPageProps) {
                 />
 
                 {/* Main Content Area */}
-                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+                <main
+                    id="main-content"
+                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8"
+                    role="main"
+                    aria-label="Blog content"
+                >
                     {/* Responsive Layout: Stack on mobile, grid on desktop */}
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                         {/* Main Content Column */}
