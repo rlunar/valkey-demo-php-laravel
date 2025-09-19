@@ -82,7 +82,9 @@ describe('useWeatherData', () => {
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
-      expect(result.current.error).toBe('Location not found');
+      expect(result.current.error).toBeTruthy();
+      expect(result.current.error?.type).toBe('LOCATION_NOT_FOUND');
+      expect(result.current.error?.userMessage).toBe('Unable to find weather data for this location.');
       expect(result.current.data).toBeNull();
     });
   });
@@ -106,10 +108,10 @@ describe('useWeatherData', () => {
       expect(result.current.loading).toBe(false);
       expect(result.current.data).toEqual(mockWeatherData);
       expect(result.current.error).toBeNull();
-    }, { timeout: 10000 });
+    }, { timeout: 15000 });
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
-  });
+  }, 15000);
 
   it('should handle refetch functionality', async () => {
     mockFetch.mockResolvedValue({

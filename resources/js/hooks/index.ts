@@ -4,3 +4,4 @@ export { useInitials } from './use-initials';
 export { useMobileNavigation } from './use-mobile-navigation';
 export { useIsMobile } from './use-mobile';
 export { useWeatherData } from './use-weather-data';
+export { useWeatherConfig } from './use-weather-config';

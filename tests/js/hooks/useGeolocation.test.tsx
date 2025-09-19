@@ -91,7 +91,9 @@ describe('useGeolocation', () => {
     });
 
     expect(result.current.location).toBeNull();
-    expect(result.current.error).toBe('Location access denied by user');
+    expect(result.current.error).toBeTruthy();
+    expect(result.current.error?.type).toBe('GEOLOCATION_DENIED');
+    expect(result.current.error?.userMessage).toBe('Location access denied. Showing weather for default location.');
   });
 
   it('should handle position unavailable error', async () => {
@@ -113,7 +115,9 @@ describe('useGeolocation', () => {
     });
 
     expect(result.current.location).toBeNull();
-    expect(result.current.error).toBe('Location information unavailable');
+    expect(result.current.error).toBeTruthy();
+    expect(result.current.error?.type).toBe('GEOLOCATION_UNAVAILABLE');
+    expect(result.current.error?.userMessage).toBe('Unable to determine your location. Showing weather for default location.');
   });
 
   it('should handle timeout error', async () => {
@@ -135,7 +139,9 @@ describe('useGeolocation', () => {
     });
 
     expect(result.current.location).toBeNull();
-    expect(result.current.error).toBe('Location request timed out');
+    expect(result.current.error).toBeTruthy();
+    expect(result.current.error?.type).toBe('GEOLOCATION_TIMEOUT');
+    expect(result.current.error?.userMessage).toBe('Location request timed out. Showing weather for default location.');
   });
 
   it('should handle unknown error', async () => {
@@ -157,7 +163,9 @@ describe('useGeolocation', () => {
     });
 
     expect(result.current.location).toBeNull();
-    expect(result.current.error).toBe('An unknown error occurred while retrieving location');
+    expect(result.current.error).toBeTruthy();
+    expect(result.current.error?.type).toBe('UNKNOWN_ERROR');
+    expect(result.current.error?.userMessage).toBe('An unexpected error occurred. Please try again.');
   });
 
   it('should handle unsupported geolocation', () => {
@@ -171,7 +179,9 @@ describe('useGeolocation', () => {
     const { result } = renderHook(() => useGeolocation());
 
     expect(result.current.location).toBeNull();
-    expect(result.current.error).toBe('Geolocation is not supported by this browser');
+    expect(result.current.error).toBeTruthy();
+    expect(result.current.error?.type).toBe('GEOLOCATION_UNSUPPORTED');
+    expect(result.current.error?.userMessage).toBe('Location services are not supported by your browser. Showing weather for default location.');
     expect(result.current.loading).toBe(false);
 
     // Restore geolocation
@@ -246,7 +256,7 @@ describe('useGeolocation', () => {
     const { result } = renderHook(() => useGeolocation());
 
     await waitFor(() => {
-      expect(result.current.error).toBe('Location access denied by user');
+      expect(result.current.error?.type).toBe('GEOLOCATION_DENIED');
     });
 
     // Now simulate a successful request

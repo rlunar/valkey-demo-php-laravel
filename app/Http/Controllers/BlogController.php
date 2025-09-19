@@ -26,7 +26,7 @@ class BlogController extends Controller
     private function getMockBlogData(): array
     {
         return [
-            'siteName' => 'Large',
+            'siteName' => 'Cache me, if you can',
             'categories' => [
                 'World',
                 'U.S.',

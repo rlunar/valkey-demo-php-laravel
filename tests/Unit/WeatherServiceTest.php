@@ -34,7 +34,7 @@ class WeatherServiceTest extends TestCase
         Config::set('weather.api_key', '');
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('OpenWeather API key is not configured');
+        $this->expectExceptionMessage('OpenWeather API key is required but not configured');
 
         new WeatherService();
     }

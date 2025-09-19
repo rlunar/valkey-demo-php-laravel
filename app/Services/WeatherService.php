@@ -16,10 +16,14 @@ class WeatherService
 
     public function __construct()
     {
-        $this->apiKey = config('weather.api_key');
-        $this->apiUrl = config('weather.api_url');
-        $this->cacheTtl = config('weather.cache_ttl');
-        $this->retryAttempts = config('weather.retry_attempts');
+        // Use WeatherConfigService for validated configuration
+        $apiConfig = WeatherConfigService::getApiConfig();
+        $cacheConfig = WeatherConfigService::getCacheConfig();
+
+        $this->apiKey = $apiConfig['api_key'];
+        $this->apiUrl = $apiConfig['api_url'];
+        $this->cacheTtl = $cacheConfig['cache_ttl'];
+        $this->retryAttempts = $cacheConfig['retry_attempts'];
 
         if (empty($this->apiKey)) {
             throw new Exception('OpenWeather API key is not configured');
@@ -72,9 +76,26 @@ class WeatherService
     {
         $attempt = 0;
         $lastException = null;
+        $startTime = microtime(true);
+
+        Log::info('Starting weather API request', [
+            'lat' => $lat,
+            'lon' => $lon,
+            'max_attempts' => $this->retryAttempts,
+            'api_url' => $this->apiUrl,
+        ]);
 
         while ($attempt < $this->retryAttempts) {
+            $attemptStartTime = microtime(true);
+            $attempt++;
+
             try {
+                Log::debug("Weather API attempt {$attempt}/{$this->retryAttempts}", [
+                    'lat' => $lat,
+                    'lon' => $lon,
+                    'attempt' => $attempt,
+                ]);
+
                 $response = Http::timeout(10)
                     ->get("{$this->apiUrl}/weather", [
                         'lat' => $lat,
@@ -83,13 +104,34 @@ class WeatherService
                         'units' => 'metric', // Use Celsius
                     ]);
 
+                $attemptDuration = (microtime(true) - $attemptStartTime) * 1000; // Convert to milliseconds
+
                 if ($response->successful()) {
                     $data = $response->json();
+
+                    Log::info('Weather API request successful', [
+                        'lat' => $lat,
+                        'lon' => $lon,
+                        'attempt' => $attempt,
+                        'duration_ms' => round($attemptDuration, 2),
+                        'total_duration_ms' => round((microtime(true) - $startTime) * 1000, 2),
+                        'response_size' => strlen($response->body()),
+                    ]);
+
                     if (!is_array($data)) {
                         throw new Exception('Invalid response format from weather API');
                     }
                     return $this->formatWeatherData($data);
                 }
+
+                Log::warning('Weather API returned error status', [
+                    'lat' => $lat,
+                    'lon' => $lon,
+                    'attempt' => $attempt,
+                    'status' => $response->status(),
+                    'duration_ms' => round($attemptDuration, 2),
+                    'response_body' => $response->body(),
+                ]);
 
                 // Handle specific HTTP error codes - don't retry for certain errors
                 if (in_array($response->status(), [401, 404, 429])) {
@@ -100,37 +142,64 @@ class WeatherService
                 throw new Exception("HTTP {$response->status()}: {$response->body()}");
 
             } catch (Exception $e) {
+                $attemptDuration = (microtime(true) - $attemptStartTime) * 1000;
+
                 // If it's a specific API error (401, 404, 429), re-throw immediately
                 if (str_contains($e->getMessage(), 'Weather service configuration error') ||
                     str_contains($e->getMessage(), 'Location not found') ||
                     str_contains($e->getMessage(), 'rate limiting')) {
+
+                    Log::error('Weather API non-retryable error', [
+                        'lat' => $lat,
+                        'lon' => $lon,
+                        'attempt' => $attempt,
+                        'error' => $e->getMessage(),
+                        'duration_ms' => round($attemptDuration, 2),
+                    ]);
+
                     throw $e;
                 }
 
                 $lastException = $e;
-                $attempt++;
 
                 Log::warning('Weather API request failed', [
                     'attempt' => $attempt,
+                    'max_attempts' => $this->retryAttempts,
                     'lat' => $lat,
                     'lon' => $lon,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'error_type' => get_class($e),
+                    'duration_ms' => round($attemptDuration, 2),
                 ]);
 
                 if ($attempt < $this->retryAttempts) {
                     // Exponential backoff with jitter
-                    $delay = pow(2, $attempt) + rand(0, 1000) / 1000;
+                    $baseDelay = pow(2, $attempt - 1); // 1, 2, 4 seconds
+                    $jitter = rand(0, 1000) / 1000; // 0-1 second jitter
+                    $delay = $baseDelay + $jitter;
+
+                    Log::info("Retrying weather API request in {$delay} seconds", [
+                        'lat' => $lat,
+                        'lon' => $lon,
+                        'next_attempt' => $attempt + 1,
+                        'delay_seconds' => $delay,
+                    ]);
+
                     sleep($delay);
                 }
             }
         }
 
         // All attempts failed
+        $totalDuration = (microtime(true) - $startTime) * 1000;
+
         Log::error('Weather API requests exhausted', [
             'lat' => $lat,
             'lon' => $lon,
-            'attempts' => $this->retryAttempts,
-            'last_error' => $lastException?->getMessage()
+            'total_attempts' => $this->retryAttempts,
+            'total_duration_ms' => round($totalDuration, 2),
+            'last_error' => $lastException?->getMessage(),
+            'last_error_type' => $lastException ? get_class($lastException) : null,
         ]);
 
         throw new Exception('Weather service temporarily unavailable. Please try again later.');
@@ -308,6 +377,6 @@ class WeatherService
      */
     public function getDefaultLocation(): array
     {
-        return config('weather.default_location');
+        return WeatherConfigService::getDefaultLocation();
     }
 }

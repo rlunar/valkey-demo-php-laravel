@@ -22,3 +22,10 @@ createInertiaApp({
 
 // This will set light / dark mode on load...
 initializeTheme();
+
+// Initialize performance monitoring
+if (typeof window !== 'undefined') {
+    import('./lib/weather-performance').then(({ initWeatherPerformanceMonitoring }) => {
+        initWeatherPerformanceMonitoring();
+    });
+}
