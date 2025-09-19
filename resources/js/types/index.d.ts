@@ -81,6 +81,16 @@ export interface SidebarData {
     recentPosts: RecentPost[];
     archives: ArchiveLink[];
     externalLinks: ExternalLink[];
+    weather?: WeatherConfig;
+}
+
+export interface WeatherConfig {
+    enabled: boolean;
+    defaultLocation?: {
+        lat: number;
+        lon: number;
+        name: string;
+    };
 }
 
 export interface RecentPost {

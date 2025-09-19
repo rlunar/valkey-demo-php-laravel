@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { SidebarData } from '@/types';
 import LazyImage from '@/components/lazy-image';
+import WeatherWidget from '@/components/weather-widget';
 
 interface BlogSidebarProps {
   sidebar: SidebarData;
@@ -72,6 +73,13 @@ export default function BlogSidebar({ sidebar }: BlogSidebarProps) {
             {sidebar.aboutText}
           </p>
         </section>
+
+        {/* Weather Widget Section */}
+        {sidebar.weather?.enabled && (
+          <WeatherWidget
+            defaultLocation={sidebar.weather.defaultLocation}
+          />
+        )}
 
         {/* Recent Posts Section */}
         {sidebar.recentPosts.length > 0 && (

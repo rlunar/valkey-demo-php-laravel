@@ -227,6 +227,14 @@ function List&lt;T&gt;({ items, renderItem }: ListProps&lt;T&gt;) {
                     ['label' => 'Twitter', 'url' => 'https://twitter.com'],
                     ['label' => 'LinkedIn', 'url' => 'https://linkedin.com'],
                     ['label' => 'Dev.to', 'url' => 'https://dev.to']
+                ],
+                'weather' => [
+                    'enabled' => true,
+                    'defaultLocation' => [
+                        'lat' => 40.7128,
+                        'lon' => -74.0060,
+                        'name' => 'New York, NY'
+                    ]
                 ]
             ],
             'pagination' => [
