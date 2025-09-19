@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\WeatherService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class WeatherController extends Controller
 {
+    private WeatherService $weatherService;
+
+    public function __construct(WeatherService $weatherService)
+    {
+        $this->weatherService = $weatherService;
+    }
+
     /**
      * Get current weather data for given coordinates
      */
@@ -33,31 +43,51 @@ class WeatherController extends Controller
             ], 400);
         }
 
-        $latitude = $request->input('lat');
-        $longitude = $request->input('lon');
+        $latitude = (float) $request->input('lat');
+        $longitude = (float) $request->input('lon');
 
-        // Validate API key is configured
-        if (empty(config('weather.api_key'))) {
-            return response()->json([
-                'error' => 'Weather service is not properly configured'
-            ], 503);
-        }
+        try {
+            // Fetch weather data using the service (with caching)
+            $weatherData = $this->weatherService->fetchWeatherData($latitude, $longitude);
 
-        // TODO: Implement weather service integration in next task
-        // For now, return a placeholder response with the provided coordinates
-        return response()->json([
-            'location' => 'Sample Location',
-            'temperature' => 22,
-            'condition' => 'Clear',
-            'description' => 'clear sky',
-            'icon' => '01d',
-            'humidity' => 65,
-            'windSpeed' => 3.5,
-            'coordinates' => [
+            return response()->json($weatherData);
+
+        } catch (Exception $e) {
+            Log::error('Weather API error in controller', [
                 'lat' => $latitude,
                 'lon' => $longitude,
-            ],
-            'lastUpdated' => now()->toISOString(),
-        ]);
+                'error' => $e->getMessage()
+            ]);
+
+            // Return appropriate error response based on exception message
+            if (str_contains($e->getMessage(), 'configuration error')) {
+                return response()->json([
+                    'error' => 'Weather service is not properly configured'
+                ], 503);
+            }
+
+            if (str_contains($e->getMessage(), 'Location not found')) {
+                return response()->json([
+                    'error' => 'Location not found'
+                ], 404);
+            }
+
+            if (str_contains($e->getMessage(), 'rate limiting')) {
+                return response()->json([
+                    'error' => 'Weather service temporarily unavailable due to high demand'
+                ], 429);
+            }
+
+            if (str_contains($e->getMessage(), 'Invalid latitude') || str_contains($e->getMessage(), 'Invalid longitude')) {
+                return response()->json([
+                    'error' => 'Invalid coordinates provided'
+                ], 400);
+            }
+
+            // Generic error for other cases
+            return response()->json([
+                'error' => 'Weather data is currently unavailable. Please try again later.'
+            ], 503);
+        }
     }
 }
