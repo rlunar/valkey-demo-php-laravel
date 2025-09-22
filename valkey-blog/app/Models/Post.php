@@ -21,6 +21,7 @@ class Post extends Model
         'status',
         'published_at',
         'user_id',
+        'category_id',
     ];
 
     protected $casts = [
@@ -33,6 +34,14 @@ class Post extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the category that owns the post.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**
