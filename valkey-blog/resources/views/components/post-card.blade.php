@@ -5,7 +5,7 @@
     <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
         <div class="col-md-6 px-0">
             <h1 class="display-4 fst-italic">{{ $post->title }}</h1>
-            <p class="lead my-3">{{ $post->excerpt ?? Str::limit(strip_tags($post->content), 150) }}</p>
+            <p class="lead my-3">{{ $post->getExcerptForContext('featured') }}</p>
             <p class="lead mb-0">
                 <a href="{{ route('post.show', $post->slug) }}" class="text-white fw-bold">Continue reading...</a>
             </p>
@@ -24,7 +24,7 @@
                 <strong class="d-inline-block mb-2 text-primary">{{ ucfirst($post->status) }}</strong>
                 <h3 class="mb-0">{{ $post->title }}</h3>
                 <div class="mb-1 text-muted">{{ $post->published_at->format('M d') }}</div>
-                <p class="card-text mb-auto">{{ $post->excerpt ?? Str::limit(strip_tags($post->content), 120) }}</p>
+                <p class="card-text mb-auto">{{ $post->getExcerptForContext('card') }}</p>
                 <a href="{{ route('post.show', $post->slug) }}" class="stretched-link">Continue reading</a>
             </div>
             <div class="col-auto d-none d-lg-block">

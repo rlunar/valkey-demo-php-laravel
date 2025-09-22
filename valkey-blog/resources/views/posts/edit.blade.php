@@ -77,7 +77,17 @@
                                     {{ $message }}
                                 </div>
                             @enderror
-                            <div class="form-text">Optional. Maximum 500 characters.</div>
+                            <div class="form-text">Optional. Maximum 500 characters. If left empty, will be auto-generated from content.</div>
+                            <div id="excerpt-preview" class="mt-2 p-2 bg-light rounded" style="display: none;">
+                                <small class="text-muted"><strong>Auto-generated preview:</strong></small>
+                                <div id="excerpt-preview-text" class="mt-1"></div>
+                            </div>
+                            @if(!$post->excerpt && $post->content)
+                                <div class="mt-2 p-2 bg-info bg-opacity-10 rounded">
+                                    <small class="text-info"><strong>Current auto-generated excerpt:</strong></small>
+                                    <div class="mt-1">{{ $post->generateExcerpt() }}</div>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Content Field -->
@@ -264,8 +274,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Character counter for excerpt
+    // Character counter for excerpt and auto-preview
     const excerptTextarea = document.getElementById('excerpt');
+    const contentTextarea = document.getElementById('content');
+    const excerptPreview = document.getElementById('excerpt-preview');
+    const excerptPreviewText = document.getElementById('excerpt-preview-text');
+    
     if (excerptTextarea) {
         const maxLength = 500;
         const counter = document.createElement('div');
@@ -279,8 +293,53 @@ document.addEventListener('DOMContentLoaded', function() {
             counter.className = remaining < 50 ? 'form-text text-end text-warning' : 'form-text text-end';
         }
         
-        excerptTextarea.addEventListener('input', updateCounter);
+        function generateExcerpt(content, length = 160) {
+            // Strip HTML tags and get plain text
+            const plainText = content.replace(/<[^>]*>/g, '');
+            
+            // Remove extra whitespace
+            const cleanText = plainText.replace(/\s+/g, ' ').trim();
+            
+            // Truncate to specified length
+            if (cleanText.length <= length) {
+                return cleanText;
+            }
+            
+            // Find the last complete word within the length limit
+            const truncated = cleanText.substring(0, length);
+            const lastSpace = truncated.lastIndexOf(' ');
+            
+            if (lastSpace !== -1) {
+                return truncated.substring(0, lastSpace) + '...';
+            }
+            
+            return truncated + '...';
+        }
+        
+        function updateExcerptPreview() {
+            const hasExcerpt = excerptTextarea.value.trim().length > 0;
+            const hasContent = contentTextarea && contentTextarea.value.trim().length > 0;
+            
+            if (!hasExcerpt && hasContent && excerptPreview && excerptPreviewText) {
+                const autoExcerpt = generateExcerpt(contentTextarea.value);
+                excerptPreviewText.textContent = autoExcerpt;
+                excerptPreview.style.display = 'block';
+            } else if (excerptPreview) {
+                excerptPreview.style.display = 'none';
+            }
+        }
+        
+        excerptTextarea.addEventListener('input', function() {
+            updateCounter();
+            updateExcerptPreview();
+        });
+        
+        if (contentTextarea) {
+            contentTextarea.addEventListener('input', updateExcerptPreview);
+        }
+        
         updateCounter();
+        updateExcerptPreview();
     }
 });
 </script>

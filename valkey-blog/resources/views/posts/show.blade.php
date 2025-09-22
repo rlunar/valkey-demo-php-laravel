@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $post->title . ' - Valkey Blog')
-@section('description', $post->excerpt ?? Str::limit(strip_tags($post->content), 160))
+@section('description', $post->getExcerptForContext('meta'))
 @section('author', $post->user->name)
 
 @section('content')
@@ -17,7 +17,7 @@
 
             <!-- Post Content -->
             <div class="blog-post-content">
-                {!! nl2br(e($post->content)) !!}
+                {!! $post->formatted_content !!}
             </div>
 
             <!-- Post Footer -->
@@ -85,6 +85,7 @@
     
     .blog-post-content p {
         margin-bottom: 1.5rem;
+        text-align: justify;
     }
     
     .blog-post-content h1,
@@ -93,31 +94,83 @@
     .blog-post-content h4,
     .blog-post-content h5,
     .blog-post-content h6 {
-        margin-top: 2rem;
-        margin-bottom: 1rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
         font-weight: 600;
+        color: #212529;
+    }
+    
+    .blog-post-content h1:first-child,
+    .blog-post-content h2:first-child,
+    .blog-post-content h3:first-child {
+        margin-top: 0;
     }
     
     .blog-post-content blockquote {
-        border-left: 4px solid #007bff;
-        padding-left: 1rem;
-        margin: 1.5rem 0;
         font-style: italic;
         color: #6c757d;
+        margin: 2rem 0;
+        font-size: 1.05rem;
+    }
+    
+    .blog-post-content blockquote p {
+        margin-bottom: 0;
     }
     
     .blog-post-content code {
-        background-color: #f8f9fa;
-        padding: 0.2rem 0.4rem;
-        border-radius: 0.25rem;
-        font-size: 0.9em;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        font-size: 0.875em;
+        color: #e83e8c;
+        word-wrap: break-word;
     }
     
     .blog-post-content pre {
-        background-color: #f8f9fa;
-        padding: 1rem;
-        border-radius: 0.5rem;
         overflow-x: auto;
+        margin: 1.5rem 0;
+        font-size: 0.875rem;
+        line-height: 1.45;
+    }
+    
+    .blog-post-content pre code {
+        color: #212529;
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+    }
+    
+    .blog-post-content strong {
+        font-weight: 600;
+    }
+    
+    .blog-post-content em {
+        font-style: italic;
+    }
+    
+    .blog-post-content a {
+        color: #0d6efd;
+        text-decoration: underline;
+    }
+    
+    .blog-post-content a:hover {
+        color: #0a58ca;
+        text-decoration: none;
+    }
+    
+    .blog-post-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.375rem;
+        margin: 1.5rem 0;
+    }
+    
+    .blog-post-content ul,
+    .blog-post-content ol {
+        margin-bottom: 1.5rem;
+        padding-left: 2rem;
+    }
+    
+    .blog-post-content li {
+        margin-bottom: 0.5rem;
     }
 </style>
 @endpush
