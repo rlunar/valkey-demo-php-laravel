@@ -25,9 +25,38 @@ DB_PASSWORD=your_password
 
 #### Create Migrations
 ```bash
-php artisan make:migration create_posts_table
 php artisan make:migration create_categories_table
+php artisan make:migration create_posts_table
 php artisan make:migration create_comments_table
+```
+
+
+#### Categories Migration (`database/migrations/xxxx_create_categories_table.php`)
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('color')->default('#007bff');
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('categories');
+    }
+};
 ```
 
 #### Posts Migration (`database/migrations/xxxx_create_posts_table.php`)
@@ -59,34 +88,6 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('posts');
-    }
-};
-```
-
-#### Categories Migration (`database/migrations/xxxx_create_categories_table.php`)
-```php
-<?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class extends Migration
-{
-    public function up()
-    {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('color')->default('#007bff');
-            $table->timestamps();
-        });
-    }
-
-    public function down()
-    {
-        Schema::dropIfExists('categories');
     }
 };
 ```
