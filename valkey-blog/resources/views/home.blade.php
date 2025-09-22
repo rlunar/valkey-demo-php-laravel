@@ -4,46 +4,72 @@
 @section('description', 'Latest insights, tutorials, and updates from the Valkey development team')
 
 @section('content')
-<div class="row mb-2">
-    <div class="col-md-12">
-        <!-- Blog Header -->
-        <div class="blog-header py-3 mb-4">
-            <div class="row flex-nowrap justify-content-between align-items-center">
-                <div class="col-12 text-center">
-                    <h1 class="blog-title">Valkey Developer Blog</h1>
-                    <p class="blog-description">Insights, tutorials, and updates from the Valkey team</p>
-                </div>
-            </div>
+<!-- Blog Header -->
+<div class="p-4 p-md-5 mb-4 text-center bg-white rounded shadow-sm">
+    <div class="col-md-8 mx-auto">
+        <h1 class="display-4 blog-title text-dark">Valkey Developer Blog</h1>
+        <p class="fs-5 text-muted">Insights, tutorials, and updates from the Valkey development community</p>
+        <p class="lead mb-0">
+            <small class="text-muted">
+                Discover the latest in high-performance data structures, Redis compatibility, and open-source innovation
+            </small>
+        </p>
+    </div>
+</div>
+
+@if($posts->count() > 0)
+    <!-- Featured Post (First Post) -->
+    @if($posts->isNotEmpty())
+        <x-post-card :post="$posts->first()" :featured="true" />
+    @endif
+
+    <!-- Regular Posts Grid -->
+    @if($posts->count() > 1)
+        <div class="row mb-4">
+            @foreach($posts->skip(1) as $post)
+                <x-post-card :post="$post" />
+            @endforeach
         </div>
+    @endif
 
-        @if($posts->count() > 0)
-            <!-- Featured Post (First Post) -->
-            @if($posts->isNotEmpty())
-                <x-post-card :post="$posts->first()" :featured="true" />
-            @endif
+    <!-- Pagination -->
+    @if($posts->hasPages())
+        <nav aria-label="Blog pagination" class="d-flex justify-content-center mt-5">
+            {{ $posts->links('pagination::bootstrap-4') }}
+        </nav>
+    @endif
+@else
+    <!-- No Posts Message -->
+    <div class="text-center py-5">
+        <div class="col-md-6 mx-auto">
+            <svg class="bd-placeholder-img mb-4" width="120" height="120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="No posts" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <title>No posts</title>
+                <rect width="100%" height="100%" fill="#e9ecef" rx="15"></rect>
+                <text x="50%" y="50%" fill="#6c757d" dy=".3em" font-size="16">📝</text>
+            </svg>
+            <h3 class="text-muted mb-3">No posts available yet</h3>
+            <p class="text-muted mb-4">We're working on bringing you amazing content about Valkey. Check back soon for new insights and tutorials!</p>
+            @auth
+                <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">Create First Post</a>
+            @endauth
+        </div>
+    </div>
+@endif
 
-            <!-- Regular Posts Grid -->
-            @if($posts->count() > 1)
-                <div class="row mb-4">
-                    @foreach($posts->skip(1) as $post)
-                        <x-post-card :post="$post" />
-                    @endforeach
-                </div>
-            @endif
-
-            <!-- Pagination -->
-            @if($posts->hasPages())
-                <div class="d-flex justify-content-center">
-                    {{ $posts->links() }}
-                </div>
-            @endif
-        @else
-            <!-- No Posts Message -->
-            <div class="text-center py-5">
-                <h3 class="text-muted">No posts available</h3>
-                <p class="text-muted">Check back soon for new content!</p>
+<!-- Newsletter Signup Section -->
+<div class="p-4 p-md-5 mb-4 bg-primary text-white rounded">
+    <div class="col-md-8 mx-auto text-center">
+        <h4 class="mb-3">Stay Updated</h4>
+        <p class="mb-4">Get the latest Valkey insights delivered to your inbox. No spam, just quality content.</p>
+        <form class="row g-3 justify-content-center">
+            <div class="col-md-6">
+                <input type="email" class="form-control" placeholder="Enter your email" required>
             </div>
-        @endif
+            <div class="col-auto">
+                <button type="submit" class="btn btn-light">Subscribe</button>
+            </div>
+        </form>
+        <small class="d-block mt-2 opacity-75">We respect your privacy. Unsubscribe at any time.</small>
     </div>
 </div>
 @endsection
