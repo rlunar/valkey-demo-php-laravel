@@ -6,7 +6,6 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -46,11 +45,12 @@ class PostController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
             'status' => 'required|in:draft,published',
+            'slug' => 'nullable|string|max:255|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/|unique:posts,slug',
+        ], [
+            'slug.regex' => 'The slug must only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.',
+            'slug.unique' => 'This slug is already taken. Please choose a different one.',
         ]);
 
-        // Generate slug from title
-        $validated['slug'] = $this->generateUniqueSlug($validated['title']);
-        
         // Set published_at if status is published
         if ($validated['status'] === 'published') {
             $validated['published_at'] = now();
@@ -89,12 +89,11 @@ class PostController extends Controller
             'content' => 'required|string',
             'excerpt' => 'nullable|string|max:500',
             'status' => 'required|in:draft,published',
+            'slug' => 'nullable|string|max:255|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/|unique:posts,slug,' . $post->id,
+        ], [
+            'slug.regex' => 'The slug must only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.',
+            'slug.unique' => 'This slug is already taken. Please choose a different one.',
         ]);
-
-        // Generate new slug if title changed
-        if ($post->title !== $validated['title']) {
-            $validated['slug'] = $this->generateUniqueSlug($validated['title'], $post->id);
-        }
 
         // Set or clear published_at based on status
         if ($validated['status'] === 'published' && $post->status !== 'published') {
@@ -126,30 +125,5 @@ class PostController extends Controller
             ->with('success', 'Post deleted successfully.');
     }
 
-    /**
-     * Generate a unique slug from the given title.
-     */
-    private function generateUniqueSlug(string $title, ?int $excludeId = null): string
-    {
-        $slug = Str::slug($title);
-        $originalSlug = $slug;
-        $counter = 1;
 
-        while (true) {
-            $query = Post::where('slug', $slug);
-            
-            if ($excludeId) {
-                $query->where('id', '!=', $excludeId);
-            }
-            
-            if (!$query->exists()) {
-                break;
-            }
-            
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
-
-        return $slug;
-    }
 }

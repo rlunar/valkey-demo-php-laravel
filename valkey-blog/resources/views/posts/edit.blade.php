@@ -42,6 +42,27 @@
                             @enderror
                         </div>
 
+                        <!-- Slug Field -->
+                        <div class="mb-3">
+                            <label for="slug" class="form-label">URL Slug</label>
+                            <input type="text" 
+                                   class="form-control @error('slug') is-invalid @enderror" 
+                                   id="slug" 
+                                   name="slug" 
+                                   value="{{ old('slug', $post->slug) }}" 
+                                   maxlength="255"
+                                   placeholder="URL-safe version of the title">
+                            @error('slug')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="form-text">
+                                Current URL: <a href="{{ route('home.show', $post->slug) }}" target="_blank">{{ route('home.show', $post->slug) }}</a><br>
+                                <strong>Warning:</strong> Changing the slug will change the post's URL. This may break existing links.
+                            </div>
+                        </div>
+
                         <!-- Excerpt Field -->
                         <div class="mb-3">
                             <label for="excerpt" class="form-label">Excerpt</label>
@@ -172,6 +193,64 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    const originalSlug = slugInput ? slugInput.value : '';
+    let slugManuallyChanged = false;
+
+    // Function to generate slug from title
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '') // Remove special characters except spaces and hyphens
+            .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+            .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    }
+
+    // Track changes to slug field
+    if (slugInput) {
+        slugInput.addEventListener('input', function() {
+            slugManuallyChanged = this.value !== originalSlug;
+            
+            // Format the slug as user types
+            if (this.value) {
+                const formattedSlug = generateSlug(this.value);
+                if (this.value !== formattedSlug) {
+                    const cursorPosition = this.selectionStart;
+                    this.value = formattedSlug;
+                    this.setSelectionRange(cursorPosition, cursorPosition);
+                }
+            }
+
+            // Update warning message
+            const helpText = slugInput.parentNode.querySelector('.form-text');
+            if (helpText && slugManuallyChanged) {
+                helpText.innerHTML = `
+                    Current URL: <a href="{{ route('home.show', $post->slug) }}" target="_blank">{{ route('home.show', $post->slug) }}</a><br>
+                    <strong class="text-warning">Warning:</strong> Changing the slug will change the post's URL. This may break existing links.
+                `;
+            }
+        });
+
+        // Add button to regenerate slug from current title
+        const regenerateBtn = document.createElement('button');
+        regenerateBtn.type = 'button';
+        regenerateBtn.className = 'btn btn-sm btn-outline-secondary mt-2';
+        regenerateBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Regenerate from Title';
+        regenerateBtn.addEventListener('click', function() {
+            if (titleInput && titleInput.value.trim()) {
+                if (confirm('This will replace the current slug with one generated from the title. Are you sure?')) {
+                    slugInput.value = generateSlug(titleInput.value);
+                    slugManuallyChanged = true;
+                    slugInput.dispatchEvent(new Event('input'));
+                }
+            }
+        });
+        
+        slugInput.parentNode.appendChild(regenerateBtn);
+    }
+
     // Auto-resize textarea based on content
     const contentTextarea = document.getElementById('content');
     if (contentTextarea) {

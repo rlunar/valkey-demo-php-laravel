@@ -36,6 +36,33 @@
                             @enderror
                         </div>
 
+                        <!-- Slug Field (Optional) -->
+                        <div class="mb-3">
+                            <label for="slug" class="form-label">URL Slug</label>
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control @error('slug') is-invalid @enderror" 
+                                       id="slug" 
+                                       name="slug" 
+                                       value="{{ old('slug') }}" 
+                                       maxlength="255"
+                                       placeholder="Leave empty to auto-generate from title">
+                                <span class="input-group-text" id="slug-status">
+                                    <i class="bi bi-check-circle text-success" style="display: none;" id="slug-valid"></i>
+                                    <i class="bi bi-exclamation-circle text-warning" style="display: none;" id="slug-warning"></i>
+                                </span>
+                            </div>
+                            @error('slug')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="form-text">Optional. If left empty, will be automatically generated from the title. Must be unique and URL-safe (lowercase letters, numbers, and hyphens only).</div>
+                            <div id="url-preview" class="form-text text-muted mt-1" style="display: none;">
+                                <strong>URL Preview:</strong> <span id="preview-url"></span>
+                            </div>
+                        </div>
+
                         <!-- Excerpt Field -->
                         <div class="mb-3">
                             <label for="excerpt" class="form-label">Excerpt</label>
@@ -113,6 +140,106 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    let slugManuallyEdited = false;
+
+    // Function to generate slug from title
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '') // Remove special characters except spaces and hyphens
+            .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+            .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    }
+
+    // Auto-generate slug from title if slug hasn't been manually edited
+    if (titleInput && slugInput) {
+        const urlPreview = document.getElementById('url-preview');
+        const previewUrl = document.getElementById('preview-url');
+        const baseUrl = '{{ url("/") }}/';
+
+        function updateUrlPreview() {
+            const currentSlug = slugInput.value.trim();
+            const slugValid = document.getElementById('slug-valid');
+            const slugWarning = document.getElementById('slug-warning');
+            
+            // Validate slug format
+            const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+            const isValidFormat = !currentSlug || slugRegex.test(currentSlug);
+            
+            // Update status indicators
+            if (slugValid && slugWarning) {
+                if (currentSlug && isValidFormat) {
+                    slugValid.style.display = 'inline';
+                    slugWarning.style.display = 'none';
+                } else if (currentSlug && !isValidFormat) {
+                    slugValid.style.display = 'none';
+                    slugWarning.style.display = 'inline';
+                } else {
+                    slugValid.style.display = 'none';
+                    slugWarning.style.display = 'none';
+                }
+            }
+            
+            if (currentSlug && urlPreview && previewUrl) {
+                previewUrl.textContent = baseUrl + currentSlug;
+                urlPreview.style.display = 'block';
+            } else if (urlPreview) {
+                urlPreview.style.display = 'none';
+            }
+        }
+
+        titleInput.addEventListener('input', function() {
+            if (!slugManuallyEdited && this.value.trim()) {
+                const generatedSlug = generateSlug(this.value);
+                slugInput.value = generatedSlug;
+                updateUrlPreview();
+                
+                // Update the help text to show the generated slug
+                const helpText = slugInput.parentNode.querySelector('.form-text:first-of-type');
+                if (helpText && generatedSlug) {
+                    helpText.innerHTML = `Auto-generated: <code>${generatedSlug}</code>. You can edit this if needed.`;
+                } else if (helpText) {
+                    helpText.innerHTML = 'Optional. If left empty, will be automatically generated from the title. Must be unique and URL-safe (lowercase letters, numbers, and hyphens only).';
+                }
+            }
+        });
+
+        // Track if user manually edits the slug
+        slugInput.addEventListener('input', function() {
+            slugManuallyEdited = this.value.trim() !== '';
+            
+            // Format the slug as user types
+            if (this.value) {
+                const formattedSlug = generateSlug(this.value);
+                if (this.value !== formattedSlug) {
+                    const cursorPosition = this.selectionStart;
+                    this.value = formattedSlug;
+                    this.setSelectionRange(cursorPosition, cursorPosition);
+                }
+            }
+            
+            updateUrlPreview();
+        });
+
+        // Reset manual edit flag if slug is cleared
+        slugInput.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                slugManuallyEdited = false;
+                // Regenerate from title if available
+                if (titleInput.value.trim()) {
+                    this.value = generateSlug(titleInput.value);
+                    updateUrlPreview();
+                }
+            }
+        });
+
+        // Initialize URL preview if slug already has value
+        updateUrlPreview();
+    }
+
     // Auto-resize textarea based on content
     const contentTextarea = document.getElementById('content');
     if (contentTextarea) {
