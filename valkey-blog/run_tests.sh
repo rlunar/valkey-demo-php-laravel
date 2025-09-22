@@ -1,0 +1,3 @@
+php test_blog_functionality.php
+php test_fixes.php
+php test_responsive_design.php
