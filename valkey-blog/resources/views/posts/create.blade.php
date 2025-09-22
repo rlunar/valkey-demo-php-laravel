@@ -8,14 +8,14 @@
         <div class="col-md-10">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>Create New Post</h1>
-                <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back to Posts
                 </a>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('posts.store') }}" method="POST">
+                    <form action="{{ route('admin.posts.store') }}" method="POST">
                         @csrf
 
                         <!-- Title Field -->
@@ -100,7 +100,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle"></i> Create Post
                             </button>
-                            <a href="{{ route('posts.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-x-circle"></i> Cancel
                             </a>
                         </div>

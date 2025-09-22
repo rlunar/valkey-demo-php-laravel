@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>Manage Posts</h1>
-                <a href="{{ route('posts.create') }}" class="btn btn-primary">
+                <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Create New Post
                 </a>
             </div>
@@ -67,12 +67,12 @@
                                                        title="View Post">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('posts.edit', $post) }}" 
+                                                    <a href="{{ route('admin.posts.edit', $post) }}" 
                                                        class="btn btn-sm btn-outline-secondary" 
                                                        title="Edit Post">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <form action="{{ route('posts.destroy', $post) }}" 
+                                                    <form action="{{ route('admin.posts.destroy', $post) }}" 
                                                           method="POST" 
                                                           class="d-inline"
                                                           onsubmit="return confirm('Are you sure you want to delete this post?')">
@@ -107,7 +107,7 @@
                     </div>
                     <h4 class="text-muted">No posts found</h4>
                     <p class="text-muted">Get started by creating your first blog post.</p>
-                    <a href="{{ route('posts.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
                         <i class="bi bi-plus-circle"></i> Create Your First Post
                     </a>
                 </div>

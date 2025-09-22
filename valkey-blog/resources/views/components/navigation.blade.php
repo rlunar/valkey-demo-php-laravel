@@ -17,7 +17,7 @@
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
                 @auth
-                    <a class="btn btn-sm btn-outline-secondary me-2" href="{{ route('posts.index') }}">Admin</a>
+                    <a class="btn btn-sm btn-outline-secondary me-2" href="{{ route('admin.posts.index') }}">Admin</a>
                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-sm btn-outline-secondary">Logout</button>
@@ -76,7 +76,7 @@
             <ul class="navbar-nav">
                 @auth
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('posts.index') }}">Admin</a>
+                        <a class="nav-link" href="{{ route('admin.posts.index') }}">Admin</a>
                     </li>
                     <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}" class="d-inline">

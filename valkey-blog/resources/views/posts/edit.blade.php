@@ -12,7 +12,7 @@
                     <a href="{{ route('home.show', $post->slug) }}" class="btn btn-outline-primary">
                         <i class="bi bi-eye"></i> View Post
                     </a>
-                    <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Back to Posts
                     </a>
                 </div>
@@ -20,7 +20,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('posts.update', $post) }}" method="POST">
+                    <form action="{{ route('admin.posts.update', $post) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -147,11 +147,11 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle"></i> Update Post
                             </button>
-                            <a href="{{ route('posts.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-x-circle"></i> Cancel
                             </a>
                             <div class="ms-auto">
-                                <form action="{{ route('posts.destroy', $post) }}" 
+                                <form action="{{ route('admin.posts.destroy', $post) }}" 
                                       method="POST" 
                                       class="d-inline"
                                       onsubmit="return confirm('Are you sure you want to delete this post? This action cannot be undone.')">

@@ -7,7 +7,7 @@
             <h1 class="display-4 fst-italic">{{ $post->title }}</h1>
             <p class="lead my-3">{{ $post->excerpt ?? Str::limit(strip_tags($post->content), 150) }}</p>
             <p class="lead mb-0">
-                <a href="{{ route('posts.show', $post->slug) }}" class="text-white fw-bold">Continue reading...</a>
+                <a href="{{ route('post.show', $post->slug) }}" class="text-white fw-bold">Continue reading...</a>
             </p>
             <div class="mt-3">
                 <small class="text-muted">
@@ -25,7 +25,7 @@
                 <h3 class="mb-0">{{ $post->title }}</h3>
                 <div class="mb-1 text-muted">{{ $post->published_at->format('M d') }}</div>
                 <p class="card-text mb-auto">{{ $post->excerpt ?? Str::limit(strip_tags($post->content), 120) }}</p>
-                <a href="{{ route('posts.show', $post->slug) }}" class="stretched-link">Continue reading</a>
+                <a href="{{ route('post.show', $post->slug) }}" class="stretched-link">Continue reading</a>
             </div>
             <div class="col-auto d-none d-lg-block">
                 <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">

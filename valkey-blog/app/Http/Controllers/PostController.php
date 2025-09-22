@@ -55,7 +55,7 @@ class PostController extends Controller
 
         Post::create($validated);
 
-        return redirect()->route('posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Post created successfully.');
     }
 
@@ -93,7 +93,7 @@ class PostController extends Controller
 
         $post->update($validated);
 
-        return redirect()->route('posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Post updated successfully.');
     }
 
@@ -104,7 +104,7 @@ class PostController extends Controller
     {
         $post->delete();
 
-        return redirect()->route('posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Post deleted successfully.');
     }
 
