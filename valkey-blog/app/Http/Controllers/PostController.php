@@ -35,6 +35,12 @@ class PostController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Ensure user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('login')
+                ->with('error', 'You must be logged in to create posts.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -72,6 +78,12 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post): RedirectResponse
     {
+        // Ensure user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('login')
+                ->with('error', 'You must be logged in to update posts.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -102,6 +114,12 @@ class PostController extends Controller
      */
     public function destroy(Post $post): RedirectResponse
     {
+        // Ensure user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('login')
+                ->with('error', 'You must be logged in to delete posts.');
+        }
+
         $post->delete();
 
         return redirect()->route('admin.posts.index')
