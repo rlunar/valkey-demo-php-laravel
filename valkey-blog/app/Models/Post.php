@@ -271,6 +271,114 @@ class Post extends Model
     }
 
     /**
+     * Get related posts based on shared category and tags.
+     */
+    public function getRelatedPosts($limit = 5)
+    {
+        if (!$this->exists) {
+            return collect();
+        }
+
+        // Get posts from the same category
+        $categoryPosts = static::published()
+            ->where('id', '!=', $this->id)
+            ->where('category_id', $this->category_id)
+            ->with(['category', 'tags', 'user'])
+            ->get();
+
+        // Get posts with shared tags
+        $tagIds = $this->tags->pluck('id')->toArray();
+        $tagPosts = collect();
+        
+        if (!empty($tagIds)) {
+            $tagPosts = static::published()
+                ->where('id', '!=', $this->id)
+                ->whereHas('tags', function ($query) use ($tagIds) {
+                    $query->whereIn('tags.id', $tagIds);
+                })
+                ->with(['category', 'tags', 'user'])
+                ->get();
+        }
+
+        // Combine and score posts by relevance
+        $relatedPosts = $categoryPosts->merge($tagPosts)->unique('id');
+        
+        // Score posts based on shared tags and category match
+        $scoredPosts = $relatedPosts->map(function ($post) use ($tagIds) {
+            $score = 0;
+            
+            // Category match gets higher score
+            if ($post->category_id === $this->category_id) {
+                $score += 10;
+            }
+            
+            // Count shared tags
+            $sharedTags = $post->tags->pluck('id')->intersect($tagIds)->count();
+            $score += $sharedTags * 5;
+            
+            // Add recency bonus (newer posts get slight preference)
+            $daysSincePublished = $post->published_at->diffInDays(now());
+            $recencyScore = max(0, 30 - $daysSincePublished) / 30; // 0-1 score
+            $score += $recencyScore;
+            
+            return [
+                'post' => $post,
+                'score' => $score
+            ];
+        });
+
+        // Sort by score and return limited results
+        return $scoredPosts
+            ->sortByDesc('score')
+            ->take($limit)
+            ->pluck('post');
+    }
+
+    /**
+     * Get posts from the same category (excluding current post).
+     */
+    public function getRelatedByCategory($limit = 5)
+    {
+        if (!$this->exists || !$this->category_id) {
+            return collect();
+        }
+
+        return static::published()
+            ->where('id', '!=', $this->id)
+            ->where('category_id', $this->category_id)
+            ->with(['category', 'tags', 'user'])
+            ->orderBy('published_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get posts with shared tags (excluding current post).
+     */
+    public function getRelatedByTags($limit = 5)
+    {
+        if (!$this->exists) {
+            return collect();
+        }
+
+        $tagIds = $this->tags->pluck('id')->toArray();
+        
+        if (empty($tagIds)) {
+            return collect();
+        }
+
+        return static::published()
+            ->where('id', '!=', $this->id)
+            ->whereHas('tags', function ($query) use ($tagIds) {
+                $query->whereIn('tags.id', $tagIds);
+            })
+            ->with(['category', 'tags', 'user'])
+            ->orderBy('published_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
      * Get excerpt for different contexts (card, meta, etc.)
      */
     public function getExcerptForContext($context = 'default')
