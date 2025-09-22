@@ -62,7 +62,7 @@
                                             <td>{{ $post->created_at->format('M j, Y') }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <a href="{{ route('home.show', $post->slug) }}" 
+                                                    <a href="{{ route('post.show', $post->slug) }}" 
                                                        class="btn btn-sm btn-outline-primary" 
                                                        title="View Post">
                                                         <i class="bi bi-eye"></i>

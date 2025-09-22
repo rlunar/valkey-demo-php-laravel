@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>Edit Post</h1>
                 <div class="btn-group">
-                    <a href="{{ route('home.show', $post->slug) }}" class="btn btn-outline-primary">
+                    <a href="{{ route('post.show', $post->slug) }}" class="btn btn-outline-primary">
                         <i class="bi bi-eye"></i> View Post
                     </a>
                     <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-secondary">
@@ -58,7 +58,7 @@
                                 </div>
                             @enderror
                             <div class="form-text">
-                                Current URL: <a href="{{ route('home.show', $post->slug) }}" target="_blank">{{ route('home.show', $post->slug) }}</a><br>
+                                Current URL: <a href="{{ route('post.show', $post->slug) }}" target="_blank">{{ route('post.show', $post->slug) }}</a><br>
                                 <strong>Warning:</strong> Changing the slug will change the post's URL. This may break existing links.
                             </div>
                         </div>
@@ -154,8 +154,8 @@
                                         </p>
                                         <p class="card-text mb-0">
                                             <strong>Public URL:</strong><br>
-                                            <a href="{{ route('home.show', $post->slug) }}" target="_blank" class="text-break">
-                                                {{ route('home.show', $post->slug) }}
+                                            <a href="{{ route('post.show', $post->slug) }}" target="_blank" class="text-break">
+                                                {{ route('post.show', $post->slug) }}
                                             </a>
                                         </p>
                                     </div>
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const helpText = slugInput.parentNode.querySelector('.form-text');
             if (helpText && slugManuallyChanged) {
                 helpText.innerHTML = `
-                    Current URL: <a href="{{ route('home.show', $post->slug) }}" target="_blank">{{ route('home.show', $post->slug) }}</a><br>
+                    Current URL: <a href="{{ route('post.show', $post->slug) }}" target="_blank">{{ route('post.show', $post->slug) }}</a><br>
                     <strong class="text-warning">Warning:</strong> Changing the slug will change the post's URL. This may break existing links.
                 `;
             }
