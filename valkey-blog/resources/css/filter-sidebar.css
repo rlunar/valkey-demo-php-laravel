@@ -1,0 +1,128 @@
+/* Filter Sidebar Styles */
+.filter-sidebar .card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+
+.filter-sidebar .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+}
+
+.filter-sidebar .card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.filter-sidebar .card-body {
+    padding: 1rem;
+}
+
+/* Tag Cloud Styles */
+.tag-cloud {
+    line-height: 1.8;
+}
+
+.tag-cloud .badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.tag-cloud .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Category Badge Styles */
+.badge-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.badge-md {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Tag List Styles */
+.tag-list {
+    line-height: 1.6;
+}
+
+.tag-list .badge {
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.tag-list .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Related Posts Styles */
+.related-posts .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.related-posts .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.related-posts .card-title a {
+    color: #212529;
+    font-weight: 600;
+}
+
+.related-posts .card-title a:hover {
+    color: #0d6efd;
+}
+
+/* Active Filter Styles */
+.filter-sidebar .active-filters .badge {
+    position: relative;
+}
+
+.filter-sidebar .active-filters a {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.filter-sidebar .active-filters a:hover {
+    color: #dc3545;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .filter-sidebar {
+        margin-top: 2rem;
+    }
+    
+    .filter-sidebar .card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Post Card Enhancements */
+.post-card .category-badge {
+    margin-bottom: 0.5rem;
+}
+
+.post-card .tag-list {
+    margin-top: 0.5rem;
+}
+
+/* Featured Post Adjustments */
+.bg-dark .badge {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.bg-dark .badge:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+}

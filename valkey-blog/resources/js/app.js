@@ -1,4 +1,5 @@
 import './bootstrap';
+import './tag-autocomplete';
 
 import Alpine from 'alpinejs';
 

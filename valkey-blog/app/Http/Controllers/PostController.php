@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Category;
+use App\Models\Tag;
+use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -12,13 +15,34 @@ class PostController extends Controller
     /**
      * Display a listing of all posts for admin.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $posts = Post::with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $query = Post::with(['user', 'category', 'tags']);
 
-        return view('posts.index', compact('posts'));
+        // Filter by category if provided
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Filter by tag if provided
+        if ($request->filled('tag')) {
+            $query->whereHas('tags', function ($q) use ($request) {
+                $q->where('tags.id', $request->tag);
+            });
+        }
+
+        // Filter by status if provided
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $posts = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        // Get categories and tags for filter dropdowns
+        $categories = Category::withPostCount()->orderBy('name')->get();
+        $tags = Tag::withPostCount()->orderBy('name')->get();
+
+        return view('posts.index', compact('posts', 'categories', 'tags'));
     }
 
     /**
@@ -26,40 +50,28 @@ class PostController extends Controller
      */
     public function create(): View
     {
-        return view('posts.create');
+        $categories = Category::orderBy('name')->get();
+        $tags = Tag::orderBy('name')->get();
+
+        return view('posts.create', compact('categories', 'tags'));
     }
 
     /**
      * Store a newly created post in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(PostRequest $request): RedirectResponse
     {
-        // Ensure user is authenticated
-        if (!auth()->check()) {
-            return redirect()->route('login')
-                ->with('error', 'You must be logged in to create posts.');
-        }
+        $validated = $request->validated();
+        
+        // Extract tags from validated data before creating post
+        $tags = $validated['tags'] ?? [];
+        unset($validated['tags']);
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'excerpt' => 'nullable|string|max:500',
-            'status' => 'required|in:draft,published',
-            'slug' => 'nullable|string|max:255|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/|unique:posts,slug',
-        ], [
-            'slug.regex' => 'The slug must only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.',
-            'slug.unique' => 'This slug is already taken. Please choose a different one.',
-        ]);
+        // Create the post
+        $post = Post::create($validated);
 
-        // Set published_at if status is published
-        if ($validated['status'] === 'published') {
-            $validated['published_at'] = now();
-        }
-
-        // Set the current authenticated user as the author
-        $validated['user_id'] = auth()->id();
-
-        Post::create($validated);
+        // Handle tag synchronization
+        $this->syncTags($post, $tags);
 
         return redirect()->route('admin.posts.index')
             ->with('success', 'Post created successfully.');
@@ -70,39 +82,38 @@ class PostController extends Controller
      */
     public function edit(Post $post): View
     {
-        return view('posts.edit', compact('post'));
+        $categories = Category::orderBy('name')->get();
+        $tags = Tag::orderBy('name')->get();
+        
+        // Load the post's current tags for the form
+        $post->load('tags');
+
+        return view('posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
      * Update the specified post in storage.
      */
-    public function update(Request $request, Post $post): RedirectResponse
+    public function update(PostRequest $request, Post $post): RedirectResponse
     {
-        // Ensure user is authenticated
-        if (!auth()->check()) {
-            return redirect()->route('login')
-                ->with('error', 'You must be logged in to update posts.');
-        }
+        $validated = $request->validated();
+        
+        // Extract tags from validated data before updating post
+        $tags = $validated['tags'] ?? [];
+        unset($validated['tags']);
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'excerpt' => 'nullable|string|max:500',
-            'status' => 'required|in:draft,published',
-            'slug' => 'nullable|string|max:255|regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/|unique:posts,slug,' . $post->id,
-        ], [
-            'slug.regex' => 'The slug must only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.',
-            'slug.unique' => 'This slug is already taken. Please choose a different one.',
-        ]);
-
-        // Set or clear published_at based on status
+        // Handle published_at logic for status changes
         if ($validated['status'] === 'published' && $post->status !== 'published') {
             $validated['published_at'] = now();
         } elseif ($validated['status'] === 'draft') {
             $validated['published_at'] = null;
         }
 
+        // Update the post
         $post->update($validated);
+
+        // Handle tag synchronization
+        $this->syncTags($post, $tags);
 
         return redirect()->route('admin.posts.index')
             ->with('success', 'Post updated successfully.');
@@ -125,5 +136,30 @@ class PostController extends Controller
             ->with('success', 'Post deleted successfully.');
     }
 
+    /**
+     * Synchronize tags for a post, creating new tags as needed.
+     */
+    private function syncTags(Post $post, array $tagNames): void
+    {
+        if (empty($tagNames)) {
+            // If no tags provided, detach all existing tags
+            $post->tags()->detach();
+            return;
+        }
 
+        $tagIds = [];
+        
+        foreach ($tagNames as $tagName) {
+            // Find existing tag or create new one
+            $tag = Tag::firstOrCreate(
+                ['name' => trim($tagName)],
+                ['slug' => null] // Let the model generate the slug
+            );
+            
+            $tagIds[] = $tag->id;
+        }
+
+        // Sync the tags (this will attach new ones and detach removed ones)
+        $post->tags()->sync($tagIds);
+    }
 }

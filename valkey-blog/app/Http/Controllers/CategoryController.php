@@ -15,9 +15,11 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::withCount('posts')
+        $categories = Category::withCount(['posts' => function ($query) {
+                $query->where('status', 'published');
+            }])
             ->orderBy('name')
-            ->get();
+            ->paginate(12);
 
         return view('categories.index', compact('categories'));
     }
@@ -30,11 +32,21 @@ class CategoryController extends Controller
         $category = Category::where('slug', $slug)->firstOrFail();
         
         $posts = Post::where('category_id', $category->id)
+            ->where('status', 'published')
             ->with(['user', 'category', 'tags'])
-            ->latest()
+            ->latest('published_at')
             ->paginate(10);
 
-        return view('categories.show', compact('category', 'posts'));
+        // Get other categories for sidebar
+        $otherCategories = Category::where('id', '!=', $category->id)
+            ->withCount(['posts' => function ($query) {
+                $query->where('status', 'published');
+            }])
+            ->orderBy('name')
+            ->limit(5)
+            ->get();
+
+        return view('categories.show', compact('category', 'posts', 'otherCategories'));
     }
 
     /**
@@ -116,7 +128,7 @@ class CategoryController extends Controller
         
         $categories = Category::withCount('posts')
             ->orderBy('name')
-            ->get();
+            ->paginate(15);
 
         return view('categories.admin.index', compact('categories'));
     }

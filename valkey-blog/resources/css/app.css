@@ -1,4 +1,6 @@
 /* Bootstrap Blog Template Custom Styles */
+@import 'tag-management.css';
+@import 'filter-sidebar.css';
 
 /* Blog Header */
 .blog-header {

@@ -106,6 +106,70 @@
                             @enderror
                         </div>
 
+                        <!-- Category Field -->
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
+                            <select class="form-select @error('category_id') is-invalid @enderror" 
+                                    id="category_id" 
+                                    name="category_id" 
+                                    required>
+                                <option value="">Select a category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="form-text">
+                                Choose the primary category for this post.
+                                @if($post->category)
+                                    <br><strong>Current:</strong> {{ $post->category->name }}
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Tags Field -->
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags</label>
+                            <input type="text" 
+                                   class="form-control tag-input @error('tags') is-invalid @enderror" 
+                                   id="tags" 
+                                   name="tags_input"
+                                   placeholder="Type to search or add tags..."
+                                   autocomplete="off">
+                            
+                            <!-- Hidden input for existing tags -->
+                            <input type="hidden" 
+                                   name="existing_tags" 
+                                   value="{{ json_encode($post->tags->map(fn($tag) => ['id' => $tag->id, 'name' => $tag->name])) }}">
+                            
+                            @error('tags')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            @if($errors->has('tags.*'))
+                                <div class="invalid-feedback d-block">
+                                    @foreach($errors->get('tags.*') as $tagErrors)
+                                        @foreach($tagErrors as $error)
+                                            <div>{{ $error }}</div>
+                                        @endforeach
+                                    @endforeach
+                                </div>
+                            @endif
+                            <div class="form-text">
+                                Add relevant tags to help readers discover your content. Press Enter or select from suggestions to add tags.
+                                @if($post->tags->count() > 0)
+                                    <br><strong>Current tags:</strong> {{ $post->tags->pluck('name')->join(', ') }}
+                                @endif
+                            </div>
+                        </div>
+
                         <!-- Status Field -->
                         <div class="mb-4">
                             <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
@@ -344,3 +408,34 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
+@push('styles')
+@vite('resources/css/tag-management.css')
+@endpush
+
+@push('scripts')
+@vite('resources/js/tag-autocomplete.js')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tag autocomplete
+    const tagAutocomplete = new TagAutocomplete('#tags', {
+        searchUrl: '{{ route("tags.search") }}',
+        createUrl: '{{ route("tags.store") }}'
+    });
+
+    // Handle old input for tags if validation fails, otherwise load existing tags
+    @if(old('tags'))
+        const oldTags = @json(old('tags'));
+        if (Array.isArray(oldTags)) {
+            tagAutocomplete.setTags(oldTags);
+        }
+    @else
+        // Load existing tags from the post
+        const existingTags = @json($post->tags->map(fn($tag) => ['id' => $tag->id, 'name' => $tag->name]));
+        if (existingTags && existingTags.length > 0) {
+            tagAutocomplete.setTags(existingTags);
+        }
+    @endif
+});
+</script>
+@endpush

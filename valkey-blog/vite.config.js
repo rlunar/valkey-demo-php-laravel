@@ -6,7 +6,9 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/css/tag-management.css',
                 'resources/js/app.js',
+                'resources/js/tag-autocomplete.js',
             ],
             refresh: true,
         }),

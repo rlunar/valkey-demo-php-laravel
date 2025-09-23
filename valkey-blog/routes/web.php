@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +33,12 @@ Route::get('/post/{slug}', [HomeController::class, 'show'])->name('post.show');
 // Category routes
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Tag routes
+Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
+Route::get('/tag/{slug}', [TagController::class, 'show'])->name('tags.show');
+Route::get('/api/tags/search', [TagController::class, 'search'])->name('tags.search');
+Route::post('/api/tags', [TagController::class, 'store'])->name('tags.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +77,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    
+    // Tag management routes
+    Route::get('tags', [TagController::class, 'adminIndex'])->name('tags.index');
+    Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
+    Route::delete('tags', [TagController::class, 'bulkDestroy'])->name('tags.bulk-delete');
 });
 
 // Include authentication routes

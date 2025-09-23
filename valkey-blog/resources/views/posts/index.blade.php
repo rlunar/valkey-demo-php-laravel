@@ -20,6 +20,76 @@
                 </div>
             @endif
 
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('admin.posts.index') }}" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select name="category" id="category" class="form-select">
+                                <option value="">All Categories</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" 
+                                            {{ request('category') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }} ({{ $category->posts_count }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tag" class="form-label">Tag</label>
+                            <select name="tag" id="tag" class="form-select">
+                                <option value="">All Tags</option>
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}" 
+                                            {{ request('tag') == $tag->id ? 'selected' : '' }}>
+                                        {{ $tag->name }} ({{ $tag->posts_count }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
+                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-outline-primary me-2">
+                                <i class="bi bi-funnel"></i> Filter
+                            </button>
+                            <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Clear
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Active Filters Display -->
+            @if(request()->hasAny(['category', 'tag', 'status']))
+                <div class="mb-3">
+                    <small class="text-muted">Active filters:</small>
+                    @if(request('category'))
+                        @php $selectedCategory = $categories->firstWhere('id', request('category')) @endphp
+                        @if($selectedCategory)
+                            <span class="badge bg-primary ms-1">Category: {{ $selectedCategory->name }}</span>
+                        @endif
+                    @endif
+                    @if(request('tag'))
+                        @php $selectedTag = $tags->firstWhere('id', request('tag')) @endphp
+                        @if($selectedTag)
+                            <span class="badge bg-secondary ms-1">Tag: {{ $selectedTag->name }}</span>
+                        @endif
+                    @endif
+                    @if(request('status'))
+                        <span class="badge bg-info ms-1">Status: {{ ucfirst(request('status')) }}</span>
+                    @endif
+                </div>
+            @endif
+
             @if($posts->count() > 0)
                 <div class="card">
                     <div class="card-body p-0">
@@ -28,6 +98,8 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Tags</th>
                                         <th>Author</th>
                                         <th>Status</th>
                                         <th>Published Date</th>
@@ -43,6 +115,12 @@
                                                 @if($post->excerpt)
                                                     <small class="text-muted">{{ Str::limit($post->excerpt, 60) }}</small>
                                                 @endif
+                                            </td>
+                                            <td>
+                                                <x-category-badge :category="$post->category" />
+                                            </td>
+                                            <td>
+                                                <x-tag-list :tags="$post->tags" :limit="3" />
                                             </td>
                                             <td>{{ $post->user->name }}</td>
                                             <td>
@@ -97,7 +175,7 @@
                 <!-- Pagination -->
                 @if($posts->hasPages())
                     <div class="d-flex justify-content-center mt-4">
-                        {{ $posts->links() }}
+                        {{ $posts->appends(request()->query())->links() }}
                     </div>
                 @endif
             @else

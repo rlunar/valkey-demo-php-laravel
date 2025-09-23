@@ -9,6 +9,19 @@
     <div class="col-md-8 mx-auto">
         <!-- Post Header -->
         <div class="blog-post">
+            <!-- Category and Tags -->
+            <div class="mb-3">
+                @if($post->category)
+                    <x-category-badge :category="$post->category" size="md" />
+                @endif
+                
+                @if($post->tags && $post->tags->count() > 0)
+                    <div class="mt-2">
+                        <x-tag-list :tags="$post->tags" size="sm" />
+                    </div>
+                @endif
+            </div>
+            
             <h1 class="blog-post-title">{{ $post->title }}</h1>
             <p class="blog-post-meta">
                 {{ $post->published_at->format('F j, Y') }} by 
@@ -52,6 +65,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Related Posts -->
+        @if(isset($relatedPosts))
+            <div class="mt-5 pt-4 border-top">
+                <x-related-posts :relatedPosts="$relatedPosts" />
+            </div>
+        @endif
 
         <!-- Navigation -->
         <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
