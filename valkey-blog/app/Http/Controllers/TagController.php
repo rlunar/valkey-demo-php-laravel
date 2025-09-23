@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class TagController extends Controller
@@ -122,6 +123,8 @@ class TagController extends Controller
      */
     public function destroy(Tag $tag): RedirectResponse
     {
+        Gate::authorize('admin');
+        
         // Check if tag is being used by any posts
         if ($tag->posts()->count() > 0) {
             return redirect()->back()->with('error', 'Cannot delete tag that is being used by posts.');
@@ -137,6 +140,8 @@ class TagController extends Controller
      */
     public function adminIndex(): View
     {
+        Gate::authorize('admin');
+        
         $tags = Tag::withCount('posts')
             ->orderBy('name')
             ->paginate(20);

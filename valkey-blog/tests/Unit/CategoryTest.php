@@ -62,7 +62,7 @@ class CategoryTest extends TestCase
     public function it_generates_unique_slugs_when_duplicates_exist()
     {
         // Create first category
-        Category::create([
+        $category1 = Category::create([
             'name' => 'Technology',
             'slug' => 'technology'
         ]);
@@ -73,7 +73,7 @@ class CategoryTest extends TestCase
             'slug' => 'technology'  // This should become technology-1
         ]);
 
-        $this->assertEquals('technology', Category::first()->slug);
+        $this->assertEquals('technology', $category1->slug);
         $this->assertEquals('technology-1', $category2->slug);
     }
 

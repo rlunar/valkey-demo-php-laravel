@@ -207,7 +207,7 @@ class TagControllerTest extends TestCase
         Tag::factory()->count(3)->create();
 
         $response = $this->actingAs($this->admin)
-            ->get(route('admin.tags.index'));
+            ->get('/admin/tags');
 
         $response->assertStatus(200);
         $response->assertViewIs('tags.admin.index');
