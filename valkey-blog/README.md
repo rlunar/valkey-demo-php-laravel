@@ -67,7 +67,7 @@ A modern, responsive blog application built with Laravel 10 and Bootstrap 5. Thi
 - PHP 8.1 or higher
 - Composer
 - Node.js & npm
-- MySQL or SQLite database
+- PostgreSQL or SQLite database
 
 ### Setup Steps
 
@@ -75,7 +75,7 @@ A modern, responsive blog application built with Laravel 10 and Bootstrap 5. Thi
 
    ```bash
    git clone <repository-url>
-   cd laravel-bootstrap-blog
+   cd valkey-blog
    ```
 
 2. **Install PHP dependencies**

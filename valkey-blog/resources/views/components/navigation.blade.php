@@ -3,7 +3,9 @@
         <div class="row flex-nowrap justify-content-between align-items-center">
             <div class="col-4 pt-1">
                 <a class="link-secondary" href="#" aria-label="Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                        stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        class="mx-3" role="img" viewBox="0 0 24 24">
                         <title>Search</title>
                         <circle cx="10.5" cy="10.5" r="7.5"></circle>
                         <path d="m21 21-5.2-5.2"></path>
@@ -12,7 +14,8 @@
             </div>
             <div class="col-4 text-center">
                 <a class="blog-header-logo text-dark text-decoration-none" href="{{ route('home') }}">
-                    <h1 class="blog-title">Valkey Blog</h1>
+                    <img src="https://valkey.io/img/valkey-horizontal.svg" alt="Valkey Blog" class="img-fluid"
+                        style="height: 40px; max-width: 200px;">
                 </a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
@@ -30,12 +33,11 @@
     </div>
 </header>
 
-<div class="nav-scroller py-1 mb-2">
+<div class="nav-scroller py-1 mb-2 mx-4">
     <nav class="nav d-flex justify-content-between">
         <a class="p-2 link-secondary" href="{{ route('home') }}">Home</a>
         <a class="p-2 link-secondary" href="#">Technology</a>
         <a class="p-2 link-secondary" href="#">Performance</a>
-        <a class="p-2 link-secondary" href="#">Redis</a>
         <a class="p-2 link-secondary" href="#">Open Source</a>
         <a class="p-2 link-secondary" href="#">Community</a>
         <a class="p-2 link-secondary" href="#">Documentation</a>
@@ -48,8 +50,12 @@
 <!-- Mobile Navigation Toggle (Bootstrap Navbar for smaller screens) -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light d-lg-none">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">Valkey Blog</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="{{ route('home') }}">
+            <img src="https://valkey.io/img/valkey-horizontal.svg" alt="Valkey Blog"
+                style="height: 30px; max-width: 150px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">

@@ -90,6 +90,10 @@ redis-cli ping
 # Should return: PONG
 ```
 
+```bash
+php -d memory_limit=256M artisan db:seed --class=PostSeeder
+```
+
 ---
 
 ## Step 2: Basic Query Caching
@@ -480,146 +484,9 @@ class ClearBlogCache extends Command
 
 ---
 
-## Step 6: Performance Monitoring
+## Step 6: Testing Your Cache Implementation
 
-### 6.1 Cache Hit Rate Monitoring
-Add cache monitoring to your application:
-
-**File: `app/Http/Middleware/CacheMonitoring.php`**
-
-```php
-<?php
-
-namespace App\Http\Middleware;
-
-use Closure;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-
-class CacheMonitoring
-{
-    public function handle($request, Closure $next)
-    {
-        $startTime = microtime(true);
-        
-        $response = $next($request);
-        
-        $endTime = microtime(true);
-        $executionTime = ($endTime - $startTime) * 1000; // Convert to milliseconds
-        
-        // Log slow requests
-        if ($executionTime > 1000) { // Slower than 1 second
-            Log::info('Slow request detected', [
-                'url' => $request->fullUrl(),
-                'method' => $request->method(),
-                'execution_time' => $executionTime,
-                'user_id' => auth()->id(),
-            ]);
-        }
-        
-        return $response;
-    }
-}
-```
-
-### 6.2 Cache Statistics Command
-Create a command to show cache statistics:
-
-**File: `app/Console/Commands/CacheStats.php`**
-
-```php
-<?php
-
-namespace App\Console\Commands;
-
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
-
-class CacheStats extends Command
-{
-    protected $signature = 'cache:stats';
-    protected $description = 'Show cache statistics and information';
-
-    public function handle()
-    {
-        $this->info('Cache Configuration:');
-        $this->table(
-            ['Setting', 'Value'],
-            [
-                ['Default Driver', config('cache.default')],
-                ['Redis Host', config('database.redis.default.host')],
-                ['Redis Port', config('database.redis.default.port')],
-            ]
-        );
-
-        if (config('cache.default') === 'redis') {
-            $this->showValkeyStats();
-        }
-
-        $this->showCacheKeys();
-    }
-
-    private function showValkeyStats()
-    {
-        try {
-            $redis = Redis::connection();
-            $info = $redis->info();
-            
-            $this->info("\nValkey Statistics:");
-            $this->table(
-                ['Metric', 'Value'],
-                [
-                    ['Connected Clients', $info['connected_clients'] ?? 'N/A'],
-                    ['Used Memory', $this->formatBytes($info['used_memory'] ?? 0)],
-                    ['Total Commands Processed', number_format($info['total_commands_processed'] ?? 0)],
-                    ['Keyspace Hits', number_format($info['keyspace_hits'] ?? 0)],
-                    ['Keyspace Misses', number_format($info['keyspace_misses'] ?? 0)],
-                ]
-            );
-        } catch (\Exception $e) {
-            $this->error('Could not connect to Valkey: ' . $e->getMessage());
-        }
-    }
-
-    private function showCacheKeys()
-    {
-        $this->info("\nSample Cache Keys:");
-        
-        try {
-            if (config('cache.default') === 'redis') {
-                $redis = Redis::connection();
-                $keys = $redis->keys('*blog*');
-                
-                foreach (array_slice($keys, 0, 10) as $key) {
-                    $ttl = $redis->ttl($key);
-                    $this->line("• {$key} (TTL: {$ttl}s)");
-                }
-            }
-        } catch (\Exception $e) {
-            $this->error('Could not retrieve cache keys: ' . $e->getMessage());
-        }
-    }
-
-    private function formatBytes($bytes)
-    {
-        $units = ['B', 'KB', 'MB', 'GB'];
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        
-        $bytes /= pow(1024, $pow);
-        
-        return round($bytes, 2) . ' ' . $units[$pow];
-    }
-}
-```
-
----
-
-## Step 7: Testing Your Cache Implementation
-
-### 7.1 Create Cache Tests
+### 6.1 Create Cache Tests
 **File: `tests/Feature/CacheTest.php`**
 
 ```php
@@ -675,7 +542,7 @@ class CacheTest extends TestCase
 }
 ```
 
-### 7.2 Performance Testing Script
+### 6.2 Performance Testing Script
 Create a simple performance testing script:
 
 **File: `test_cache_performance.php`**

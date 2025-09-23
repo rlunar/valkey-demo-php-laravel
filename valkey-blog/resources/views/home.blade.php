@@ -7,11 +7,11 @@
 <!-- Blog Header -->
 <div class="p-4 p-md-5 mb-4 text-center bg-white rounded shadow-sm">
     <div class="col-md-8 mx-auto">
-        <h1 class="display-4 blog-title text-dark">Valkey Developer Blog</h1>
+        {{-- <h1 class="display-4 blog-title text-dark">Valkey Developer Blog</h1> --}}
         <p class="fs-5 text-muted">Insights, tutorials, and updates from the Valkey development community</p>
         <p class="lead mb-0">
             <small class="text-muted">
-                Discover the latest in high-performance data structures, Redis compatibility, and open-source innovation
+                Valkey is an open source (BSD) high-performance key/value datastore that supports a variety of workloads such as caching, message queues, and can act as a primary database. The project is backed by the Linux Foundation, ensuring it will remain open source forever.
             </small>
         </p>
     </div>

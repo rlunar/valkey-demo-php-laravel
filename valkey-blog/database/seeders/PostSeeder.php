@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Post;
-use App\Models\User;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PostSeeder extends Seeder
 {
@@ -15,9 +16,19 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
-        $categories = Category::all();
-        $tags = Tag::all();
+        // Increase memory limit for this seeder
+        ini_set('memory_limit', '256M');
+
+        // Disable query logging to save memory
+        DB::disableQueryLog();
+
+        // Get IDs only to reduce memory usage
+        $userIds = User::pluck('id')->toArray();
+        $categoryIds = Category::pluck('id')->toArray();
+        $tagIds = Tag::pluck('id')->toArray();
+
+        // Clear collections to free memory
+        unset($users, $categories, $tags);
 
         // Create some featured posts with specific content
         $featuredPosts = [
@@ -68,9 +79,13 @@ class PostSeeder extends Seeder
             ],
         ];
 
+        // Get category mapping for featured posts
+        $categoryMap = Category::pluck('id', 'name')->toArray();
+        $tagMap = Tag::pluck('id', 'name')->toArray();
+
         foreach ($featuredPosts as $postData) {
-            $category = $categories->firstWhere('name', $postData['category']);
-            $user = $users->random();
+            $categoryId = $categoryMap[$postData['category']] ?? $categoryIds[0];
+            $userId = $userIds[array_rand($userIds)];
 
             $post = Post::create([
                 'title' => $postData['title'],
@@ -78,33 +93,88 @@ class PostSeeder extends Seeder
                 'excerpt' => $postData['excerpt'],
                 'status' => $postData['status'],
                 'published_at' => $postData['published_at'],
-                'user_id' => $user->id,
-                'category_id' => $category->id,
+                'user_id' => $userId,
+                'category_id' => $categoryId,
             ]);
 
-            // Attach tags
-            $postTags = $tags->whereIn('name', $postData['tags']);
-            $post->tags()->attach($postTags->pluck('id'));
+            // Attach tags using IDs
+            $postTagIds = [];
+            foreach ($postData['tags'] as $tagName) {
+                if (isset($tagMap[$tagName])) {
+                    $postTagIds[] = $tagMap[$tagName];
+                }
+            }
+            if (! empty($postTagIds)) {
+                $post->tags()->attach($postTagIds);
+            }
         }
 
-        // Create additional random posts
-        // Note: PostFactory now uses existing categories instead of creating new ones
-        Post::factory(250)->create()->each(function ($post) use ($tags) {
-            // Attach random tags to each post (1-5 tags per post)
-            $randomTags = $tags->random(rand(1, 5));
-            $post->tags()->attach($randomTags->pluck('id'));
-        });
+        // Clear featured posts data
+        unset($featuredPosts, $categoryMap, $tagMap);
 
-        // Create some draft posts
-        Post::factory(80)->draft()->create()->each(function ($post) use ($tags) {
-            $randomTags = $tags->random(rand(1, 3));
-            $post->tags()->attach($randomTags->pluck('id'));
-        });
+        // Create additional random posts in smaller chunks
+        $totalPosts = 2500;
+        $chunkSize = 25; // Reduced chunk size for memory efficiency
+
+        for ($i = 0; $i < $totalPosts; $i += $chunkSize) {
+            $currentChunkSize = min($chunkSize, $totalPosts - $i);
+
+            $posts = Post::factory($currentChunkSize)->create([
+                'user_id' => $userIds[array_rand($userIds)],
+            ]);
+
+            // Attach tags in batch
+            foreach ($posts as $post) {
+                $numTags = rand(1, 5);
+                $randomTagIds = array_rand(array_flip($tagIds), $numTags);
+                if (! is_array($randomTagIds)) {
+                    $randomTagIds = [$randomTagIds];
+                }
+                $post->tags()->attach($randomTagIds);
+            }
+
+            // Clear the posts collection
+            unset($posts);
+
+            // Free memory after each chunk
+            $this->freeMemory();
+
+            $this->command->info("Created chunk of {$currentChunkSize} posts. Progress: ".($i + $currentChunkSize)."/{$totalPosts}");
+        }
+
+        // Create some draft posts in smaller chunks
+        $totalDraftPosts = 800;
+
+        for ($i = 0; $i < $totalDraftPosts; $i += $chunkSize) {
+            $currentChunkSize = min($chunkSize, $totalDraftPosts - $i);
+
+            $draftPosts = Post::factory($currentChunkSize)->draft()->create([
+                'user_id' => $userIds[array_rand($userIds)],
+            ]);
+
+            // Attach tags in batch
+            foreach ($draftPosts as $post) {
+                $numTags = rand(1, 3);
+                $randomTagIds = array_rand(array_flip($tagIds), $numTags);
+                if (! is_array($randomTagIds)) {
+                    $randomTagIds = [$randomTagIds];
+                }
+                $post->tags()->attach($randomTagIds);
+            }
+
+            // Clear the posts collection
+            unset($draftPosts);
+
+            // Free memory after each chunk
+            $this->freeMemory();
+
+            $this->command->info("Created chunk of {$currentChunkSize} draft posts. Progress: ".($i + $currentChunkSize)."/{$totalDraftPosts}");
+        }
     }
 
     private function getValkeyIntroContent(): string
     {
-        return "# Introduction to Valkey
+        return '# Introduction to Valkey
 
 Valkey is a high-performance data structure server that serves as a drop-in replacement for Redis. Built with performance, reliability, and compatibility in mind, Valkey offers all the features you love about Redis while providing enhanced performance and additional capabilities.
 
@@ -146,15 +216,15 @@ Once installed, you can connect to Valkey using any Redis-compatible client:
 
 ```bash
 valkey-cli
-127.0.0.1:6379> SET mykey \"Hello Valkey\"
+127.0.0.1:6379> SET mykey "Hello Valkey"
 OK
 127.0.0.1:6379> GET mykey
-\"Hello Valkey\"
+"Hello Valkey"
 ```
 
 ## Next Steps
 
-Now that you have Valkey running, explore our other tutorials to learn about advanced features, clustering, and optimization techniques.";
+Now that you have Valkey running, explore our other tutorials to learn about advanced features, clustering, and optimization techniques.';
     }
 
     private function getPerformanceComparisonContent(): string
@@ -218,7 +288,7 @@ Valkey offers significant performance improvements while maintaining full Redis 
 
     private function getClusteringContent(): string
     {
-        return "# Valkey Clustering: Building Scalable Applications
+        return '# Valkey Clustering: Building Scalable Applications
 
 Learn how to set up and manage Valkey clusters for high-availability and scalable applications.
 
@@ -255,7 +325,7 @@ appendonly yes
 ```bash
 # Start all nodes
 for port in {7000..7005}; do
-    valkey-server cluster-\$port.conf &
+    valkey-server cluster-$port.conf &
 done
 
 # Create the cluster
@@ -290,7 +360,7 @@ valkey-cli --cluster rebalance 127.0.0.1:7000
 4. **Implement proper backup strategies**
 5. **Test failover scenarios**
 
-Clustering is essential for production deployments requiring high availability and scalability.";
+Clustering is essential for production deployments requiring high availability and scalability.';
     }
 
     private function getDataStructuresContent(): string
@@ -570,5 +640,24 @@ valkey-cli --rdb /backup/valkey-\$DATE.rdb
 - Partition data strategically
 
 Following these optimization practices ensures your Valkey deployment performs reliably under production workloads.";
+    }
+
+    /**
+     * Free up memory after processing each chunk
+     */
+    private function freeMemory(): void
+    {
+        // Clear Eloquent model cache
+        if (method_exists(Post::class, 'clearBootedModels')) {
+            Post::clearBootedModels();
+        }
+
+        // Force garbage collection
+        if (function_exists('gc_collect_cycles')) {
+            gc_collect_cycles();
+        }
+
+        // Clear memory cycles
+        gc_mem_caches();
     }
 }
