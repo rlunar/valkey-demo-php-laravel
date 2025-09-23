@@ -37,6 +37,7 @@ class PostFactory extends Factory
             'excerpt' => $this->faker->optional()->sentence(),
             'status' => $status,
             'published_at' => $status === 'published' ? $this->faker->dateTimeBetween('-1 year', 'now') : null,
+            'view_count' => $this->faker->numberBetween(0, 10000),
             'user_id' => User::factory(),
             'category_id' => function () {
                 // Use existing categories instead of creating new ones

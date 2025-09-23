@@ -33,7 +33,6 @@ class TagSeeder extends Seeder
             'spring',
             
             // Database & Storage
-            'redis',
             'valkey',
             'mysql',
             'postgresql',

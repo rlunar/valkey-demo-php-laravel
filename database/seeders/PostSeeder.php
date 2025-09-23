@@ -114,7 +114,7 @@ class PostSeeder extends Seeder
 
         // Create additional random posts in smaller chunks
         $totalPosts = 2500;
-        $chunkSize = 25; // Reduced chunk size for memory efficiency
+        $chunkSize = 100; // Reduced chunk size for memory efficiency
 
         for ($i = 0; $i < $totalPosts; $i += $chunkSize) {
             $currentChunkSize = min($chunkSize, $totalPosts - $i);
