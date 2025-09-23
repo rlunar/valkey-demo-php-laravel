@@ -1,86 +1,91 @@
-@props(['categories', 'popularTags', 'currentCategory', 'currentTag', 'currentTags'])
+@props(['categories', 'popularTags', 'selectedCategory' => null, 'selectedTag' => null])
 
-<div class="filter-sidebar">
+<div class="filter-sidebar bg-light p-4 rounded shadow-sm">
+    <h5 class="mb-3">
+        <i class="fas fa-filter me-2"></i>Filter Posts
+    </h5>
+    
     <!-- Active Filters -->
-    @if($currentCategory || $currentTag || ($currentTags && $currentTags->count() > 0))
-        <div class="card mb-4">
-            <div class="card-header">
-                <h6 class="card-title mb-0">Active Filters</h6>
+    @if($selectedCategory || $selectedTag)
+        <div class="active-filters mb-3">
+            <h6 class="text-muted mb-2">Active Filters:</h6>
+            <div class="d-flex flex-wrap gap-2">
+                @if($selectedCategory)
+                    <div class="d-flex align-items-center bg-primary text-white px-2 py-1 rounded">
+                        <span class="me-2">{{ $selectedCategory->name }}</span>
+                        <a href="{{ route('home') }}" class="text-white text-decoration-none" title="Remove category filter">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                @endif
+                
+                @if($selectedTag)
+                    <div class="d-flex align-items-center bg-secondary text-white px-2 py-1 rounded">
+                        <span class="me-2">{{ $selectedTag->name }}</span>
+                        <a href="{{ route('home') }}" class="text-white text-decoration-none" title="Remove tag filter">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                @endif
             </div>
-            <div class="card-body">
-                @if($currentCategory)
-                    <div class="mb-2">
-                        <span class="text-muted small">Category:</span>
-                        <span class="badge bg-primary">{{ $currentCategory->name }}</span>
-                        <a href="{{ route('home') }}" 
-                           class="text-muted ms-1" title="Remove filter">×</a>
-                    </div>
-                @endif
-                
-                @if($currentTag)
-                    <div class="mb-2">
-                        <span class="text-muted small">Tag:</span>
-                        <span class="badge bg-secondary">#{{ $currentTag->name }}</span>
-                        <a href="{{ route('home') }}" 
-                           class="text-muted ms-1" title="Remove filter">×</a>
-                    </div>
-                @endif
-                
-                @if($currentTags && $currentTags->count() > 0)
-                    <div class="mb-2">
-                        <span class="text-muted small">Tags:</span>
-                        @foreach($currentTags as $tag)
-                            <span class="badge bg-secondary me-1">#{{ $tag->name }}</span>
-                        @endforeach
-                        <a href="{{ route('home') }}" 
-                           class="text-muted ms-1" title="Remove filters">×</a>
-                    </div>
-                @endif
-                
-                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary">
-                    Clear All Filters
-                </a>
-            </div>
+            
+            <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm mt-2">
+                <i class="fas fa-times me-1"></i>Clear All Filters
+            </a>
         </div>
     @endif
-
+    
     <!-- Categories Filter -->
-    @if($categories && $categories->count() > 0)
-        <div class="card mb-4">
-            <div class="card-header">
-                <h6 class="card-title mb-0">Categories</h6>
-            </div>
-            <div class="card-body">
+    <div class="filter-section mb-4">
+        <h6 class="mb-3">
+            <i class="fas fa-folder me-2"></i>Categories
+        </h6>
+        
+        @if($categories->count() > 0)
+            <div class="list-group list-group-flush">
                 @foreach($categories as $category)
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <a href="{{ route('home', ['category' => $category->slug]) }}" 
-                           class="text-decoration-none {{ $currentCategory && $currentCategory->id === $category->id ? 'fw-bold' : '' }}">
-                            {{ $category->name }}
-                        </a>
-                        <span class="badge bg-light text-muted">{{ $category->posts_count ?? 0 }}</span>
-                    </div>
+                    <a href="{{ route('categories.show', $category->slug) }}" 
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-0 {{ $selectedCategory && $selectedCategory->id === $category->id ? 'active' : '' }}">
+                        <span>{{ $category->name }}</span>
+                        <span class="badge bg-secondary rounded-pill">{{ $category->posts_count ?? 0 }}</span>
+                    </a>
                 @endforeach
             </div>
-        </div>
-    @endif
-
+        @else
+            <p class="text-muted fst-italic mb-0">No categories available</p>
+        @endif
+    </div>
+    
     <!-- Popular Tags -->
-    @if($popularTags && $popularTags->count() > 0)
-        <div class="card mb-4">
-            <div class="card-header">
-                <h6 class="card-title mb-0">Popular Tags</h6>
+    <div class="filter-section">
+        <h6 class="mb-3">
+            <i class="fas fa-tags me-2"></i>Popular Tags
+        </h6>
+        
+        @if($popularTags->count() > 0)
+            <div class="tag-cloud">
+                @foreach($popularTags as $tag)
+                    @php
+                        $postCount = $tag->posts_count ?? 0;
+                        $fontSize = $postCount > 10 ? 'fs-5' : ($postCount > 5 ? 'fs-6' : 'small');
+                        $isSelected = $selectedTag && $selectedTag->id === $tag->id;
+                    @endphp
+                    
+                    <a href="{{ route('tags.show', $tag->slug) }}" 
+                       class="badge bg-{{ $isSelected ? 'primary' : 'secondary' }} text-white text-decoration-none me-1 mb-2 {{ $fontSize }}"
+                       title="{{ $postCount }} posts">
+                        {{ $tag->name }}
+                    </a>
+                @endforeach
             </div>
-            <div class="card-body">
-                <div class="tag-cloud">
-                    @foreach($popularTags as $tag)
-                        <a href="{{ route('home', ['tag' => $tag->slug]) }}" 
-                           class="badge bg-secondary text-decoration-none me-1 mb-1 {{ $currentTag && $currentTag->id === $tag->id ? 'bg-primary' : '' }}"
-                           title="{{ $tag->posts_count ?? 0 }} posts">
-                            #{{ $tag->name }}
-                        </a>
-                    @endforeach
-                </div>
+            
+            <div class="mt-3">
+                <a href="{{ route('tags.index') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-tags me-1"></i>View All Tags
+                </a>
             </div>
-        </div>
-    @endif
+        @else
+            <p class="text-muted fst-italic mb-0">No tags available</p>
+        @endif
+    </div>
 </div>

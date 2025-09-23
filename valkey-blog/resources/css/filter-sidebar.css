@@ -1,65 +1,62 @@
 /* Filter Sidebar Styles */
-.filter-sidebar .card {
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
+.filter-sidebar {
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
 }
 
-.filter-sidebar .card-header {
-    background-color: #f8f9fa;
+.filter-sidebar .filter-section {
     border-bottom: 1px solid #dee2e6;
-    padding: 0.75rem 1rem;
+    padding-bottom: 1rem;
 }
 
-.filter-sidebar .card-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #495057;
+.filter-sidebar .filter-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
-.filter-sidebar .card-body {
-    padding: 1rem;
+.filter-sidebar .list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+.filter-sidebar .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.filter-sidebar .list-group-item.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.filter-sidebar .list-group-item.active .badge {
+    background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 /* Tag Cloud Styles */
 .tag-cloud {
-    line-height: 1.8;
+    line-height: 2;
 }
 
 .tag-cloud .badge {
-    font-size: 0.75rem;
-    font-weight: 500;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .tag-cloud .badge:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Category Badge Styles */
-.badge-sm {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-}
-
-.badge-md {
-    font-size: 0.875rem;
-    padding: 0.375rem 0.75rem;
-}
-
-/* Tag List Styles */
-.tag-list {
-    line-height: 1.6;
-}
-
-.tag-list .badge {
-    font-weight: 500;
+/* Active Filters */
+.active-filters .bg-primary,
+.active-filters .bg-secondary {
     transition: all 0.2s ease;
 }
 
-.tag-list .badge:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.active-filters .bg-primary:hover,
+.active-filters .bg-secondary:hover {
+    opacity: 0.8;
 }
 
 /* Related Posts Styles */
@@ -69,60 +66,65 @@
 
 .related-posts .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
-.related-posts .card-title a {
-    color: #212529;
-    font-weight: 600;
+.related-posts .stretched-link:hover {
+    color: #0d6efd !important;
 }
 
-.related-posts .card-title a:hover {
-    color: #0d6efd;
+/* Category Badge Styles */
+.category-badge {
+    transition: all 0.2s ease;
 }
 
-/* Active Filter Styles */
-.filter-sidebar .active-filters .badge {
-    position: relative;
+.category-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none !important;
 }
 
-.filter-sidebar .active-filters a {
-    color: #6c757d;
-    text-decoration: none;
-    font-weight: bold;
+/* Tag List Styles */
+.tag-list .badge {
+    transition: all 0.2s ease;
 }
 
-.filter-sidebar .active-filters a:hover {
-    color: #dc3545;
+.tag-list .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none !important;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 991.98px) {
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .filter-sidebar {
-        margin-top: 2rem;
+        position: static;
+        max-height: none;
+        margin-bottom: 2rem;
     }
     
-    .filter-sidebar .card {
+    .related-posts .col-md-6 {
         margin-bottom: 1rem;
     }
 }
 
-/* Post Card Enhancements */
-.post-card .category-badge {
-    margin-bottom: 0.5rem;
+/* Badge size variations */
+.badge-xs {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
 }
 
-.post-card .tag-list {
-    margin-top: 0.5rem;
+.badge-sm {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
 }
 
-/* Featured Post Adjustments */
-.bg-dark .badge {
-    background-color: rgba(255, 255, 255, 0.2) !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+.badge-md {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
 }
 
-.bg-dark .badge:hover {
-    background-color: rgba(255, 255, 255, 0.3) !important;
+.badge-lg {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
 }
