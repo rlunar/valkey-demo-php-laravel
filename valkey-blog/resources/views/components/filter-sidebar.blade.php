@@ -5,6 +5,9 @@
     <x-popular-posts-sidebar :popularPosts="$popularPosts" />
 @endif
 
+<!-- Weather Widget -->
+<x-weather-widget />
+
 <div class="filter-sidebar bg-light p-4 rounded shadow-sm">
     <h5 class="mb-3">
         <i class="fas fa-filter me-2"></i>Filter Posts
