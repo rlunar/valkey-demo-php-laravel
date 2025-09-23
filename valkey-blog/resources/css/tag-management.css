@@ -217,6 +217,15 @@
     font-style: italic;
 }
 
+.tag-loading {
+    pointer-events: none;
+}
+
+.tag-input-container .form-control.loading {
+    background-image: none;
+    padding-right: 2.5rem;
+}
+
 /* Focus States */
 .tag-input-container .form-control:focus {
     border-color: #007bff;
@@ -241,4 +250,135 @@
 .tag-input-container.success .form-control:focus {
     border-color: #28a745;
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Disabled States */
+.tag-input-container.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.tag-input-container.disabled .form-control {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+/* Tag Counter */
+.tag-counter {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.tag-counter.text-warning {
+    font-weight: 500;
+}
+
+/* Enhanced Tag Badges */
+.tag-badge {
+    transition: all 0.2s ease-in-out;
+    cursor: default;
+    user-select: none;
+}
+
+.tag-badge .btn-close {
+    transition: all 0.15s ease-in-out;
+}
+
+.tag-badge .btn-close:hover {
+    transform: scale(1.1);
+}
+
+.tag-badge .btn-close:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.5);
+}
+
+/* Enhanced Dropdown Items */
+.tag-dropdown-item {
+    position: relative;
+}
+
+.tag-dropdown-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: transparent;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.tag-dropdown-item.active::before {
+    background-color: #007bff;
+}
+
+.tag-dropdown-item:hover::before {
+    background-color: #007bff;
+}
+
+/* Keyboard Navigation Indicators */
+.tag-dropdown-item.active {
+    background-color: #e3f2fd;
+    border-left: 3px solid #007bff;
+}
+
+/* Error Message Styling */
+.error-message {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Notification Enhancements */
+.toast {
+    min-width: 300px;
+}
+
+.toast .toast-body {
+    font-size: 0.875rem;
+}
+
+/* Accessibility Improvements */
+.tag-badge .btn-close:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.tag-dropdown-item:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: -2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .tag-badge {
+        border: 2px solid currentColor;
+    }
+    
+    .tag-dropdown-item.active {
+        border: 2px solid #007bff;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .tag-badge,
+    .tag-dropdown-item,
+    .tag-loading,
+    .error-message {
+        transition: none;
+    }
+    
+    @keyframes tagFadeIn {
+        from, to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+    
+    @keyframes tagFadeOut {
+        from, to {
+            opacity: 1;
+            transform: none;
+        }
+    }
 }

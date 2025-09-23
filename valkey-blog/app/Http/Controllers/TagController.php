@@ -48,18 +48,31 @@ class TagController extends Controller
      */
     public function search(Request $request): JsonResponse
     {
-        $query = $request->get('q', '');
-        
-        if (strlen($query) < 2) {
-            return response()->json([]);
+        try {
+            $query = trim($request->get('q', ''));
+            
+            if (strlen($query) < 2) {
+                return response()->json([]);
+            }
+
+            // Sanitize the query to prevent SQL injection
+            $query = preg_replace('/[^a-zA-Z0-9\s\-_]/', '', $query);
+
+            $tags = Tag::where('name', 'LIKE', "%{$query}%")
+                ->orderByRaw('CASE WHEN name LIKE ? THEN 1 ELSE 2 END', ["{$query}%"])
+                ->orderBy('name')
+                ->limit(10)
+                ->get(['id', 'name', 'slug']);
+
+            return response()->json($tags);
+
+        } catch (\Exception $e) {
+            \Log::error('Error searching tags: ' . $e->getMessage());
+            
+            return response()->json([
+                'error' => 'An error occurred while searching tags.'
+            ], 500);
         }
-
-        $tags = Tag::where('name', 'LIKE', "%{$query}%")
-            ->orderBy('name')
-            ->limit(10)
-            ->get(['id', 'name', 'slug']);
-
-        return response()->json($tags);
     }
 
     /**
@@ -67,19 +80,41 @@ class TagController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:50|unique:tags,name|regex:/^[a-zA-Z0-9\s\-_]+$/',
+            ], [
+                'name.required' => 'Tag name is required.',
+                'name.max' => 'Tag name cannot be longer than 50 characters.',
+                'name.unique' => 'A tag with this name already exists.',
+                'name.regex' => 'Tag name can only contain letters, numbers, spaces, hyphens, and underscores.',
+            ]);
 
-        $tag = Tag::create([
-            'name' => $request->name,
-        ]);
+            $tag = Tag::create([
+                'name' => trim($request->name),
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'tag' => $tag,
-            'message' => 'Tag created successfully.'
-        ], 201);
+            return response()->json([
+                'success' => true,
+                'tag' => $tag,
+                'message' => 'Tag created successfully.'
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed.',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            \Log::error('Error creating tag: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while creating the tag. Please try again.'
+            ], 500);
+        }
     }
 
     /**
