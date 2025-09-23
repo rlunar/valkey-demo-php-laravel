@@ -89,10 +89,10 @@ class TagSeeder extends Seeder
         ];
 
         foreach ($tags as $tagName) {
-            Tag::create(['name' => $tagName]);
+            Tag::firstOrCreate(['name' => $tagName]);
         }
 
-        // Create some additional random tags
-        Tag::factory(10)->create();
+        // Note: Additional random tags can be created if needed
+        // Tag::factory(10)->create();
     }
 }

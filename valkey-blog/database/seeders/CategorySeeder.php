@@ -56,10 +56,13 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $categoryData) {
-            Category::create($categoryData);
+            Category::firstOrCreate(
+                ['name' => $categoryData['name']],
+                $categoryData
+            );
         }
 
-        // Create some additional random categories
-        Category::factory(4)->create();
+        // Note: Additional random categories can be created if needed
+        // Category::factory(4)->create();
     }
 }
