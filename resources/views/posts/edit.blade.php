@@ -1,0 +1,441 @@
+@extends('layouts.app')
+
+@section('title', 'Edit Post: ' . $post->title)
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Edit Post</h1>
+                <div class="btn-group">
+                    <a href="{{ route('post.show', $post->slug) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-eye"></i> View Post
+                    </a>
+                    <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Posts
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <form action="{{ route('admin.posts.update', $post) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- Title Field -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   class="form-control @error('title') is-invalid @enderror" 
+                                   id="title" 
+                                   name="title" 
+                                   value="{{ old('title', $post->title) }}" 
+                                   required 
+                                   maxlength="255"
+                                   placeholder="Enter post title">
+                            @error('title')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <!-- Slug Field -->
+                        <div class="mb-3">
+                            <label for="slug" class="form-label">URL Slug</label>
+                            <input type="text" 
+                                   class="form-control @error('slug') is-invalid @enderror" 
+                                   id="slug" 
+                                   name="slug" 
+                                   value="{{ old('slug', $post->slug) }}" 
+                                   maxlength="255"
+                                   placeholder="URL-safe version of the title">
+                            @error('slug')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="form-text">
+                                Current URL: <a href="{{ route('post.show', $post->slug) }}" target="_blank">{{ route('post.show', $post->slug) }}</a><br>
+                                <strong>Warning:</strong> Changing the slug will change the post's URL. This may break existing links.
+                            </div>
+                        </div>
+
+                        <!-- Excerpt Field -->
+                        <div class="mb-3">
+                            <label for="excerpt" class="form-label">Excerpt</label>
+                            <textarea class="form-control @error('excerpt') is-invalid @enderror" 
+                                      id="excerpt" 
+                                      name="excerpt" 
+                                      rows="3" 
+                                      maxlength="500"
+                                      placeholder="Brief description of the post (optional)">{{ old('excerpt', $post->excerpt) }}</textarea>
+                            @error('excerpt')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="form-text">Optional. Maximum 500 characters. If left empty, will be auto-generated from content.</div>
+                            <div id="excerpt-preview" class="mt-2 p-2 bg-light rounded" style="display: none;">
+                                <small class="text-muted"><strong>Auto-generated preview:</strong></small>
+                                <div id="excerpt-preview-text" class="mt-1"></div>
+                            </div>
+                            @if(!$post->excerpt && $post->content)
+                                <div class="mt-2 p-2 bg-info bg-opacity-10 rounded">
+                                    <small class="text-info"><strong>Current auto-generated excerpt:</strong></small>
+                                    <div class="mt-1">{{ $post->generateExcerpt() }}</div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Content Field -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content <span class="text-danger">*</span></label>
+                            <textarea class="form-control @error('content') is-invalid @enderror" 
+                                      id="content" 
+                                      name="content" 
+                                      rows="15" 
+                                      required
+                                      placeholder="Write your post content here...">{{ old('content', $post->content) }}</textarea>
+                            @error('content')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <!-- Category Field -->
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
+                            <select class="form-select @error('category_id') is-invalid @enderror" 
+                                    id="category_id" 
+                                    name="category_id" 
+                                    required>
+                                <option value="">Select a category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="form-text">
+                                Choose the primary category for this post.
+                                @if($post->category)
+                                    <br><strong>Current:</strong> {{ $post->category->name }}
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Tags Field -->
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags</label>
+                            <input type="text" 
+                                   class="form-control tag-input @error('tags') is-invalid @enderror" 
+                                   id="tags" 
+                                   name="tags_input"
+                                   placeholder="Type to search or add tags..."
+                                   autocomplete="off">
+                            
+                            <!-- Hidden input for existing tags -->
+                            <input type="hidden" 
+                                   name="existing_tags" 
+                                   value="{{ json_encode($post->tags->map(fn($tag) => ['id' => $tag->id, 'name' => $tag->name])) }}">
+                            
+                            @error('tags')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            @if($errors->has('tags.*'))
+                                <div class="invalid-feedback d-block">
+                                    @foreach($errors->get('tags.*') as $tagErrors)
+                                        @foreach($tagErrors as $error)
+                                            <div>{{ $error }}</div>
+                                        @endforeach
+                                    @endforeach
+                                </div>
+                            @endif
+                            <div class="form-text">
+                                Add relevant tags to help readers discover your content. Press Enter or select from suggestions to add tags.
+                                @if($post->tags->count() > 0)
+                                    <br><strong>Current tags:</strong> {{ $post->tags->pluck('name')->join(', ') }}
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Status Field -->
+                        <div class="mb-4">
+                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                            <select class="form-select @error('status') is-invalid @enderror" 
+                                    id="status" 
+                                    name="status" 
+                                    required>
+                                <option value="">Select status</option>
+                                <option value="draft" {{ old('status', $post->status) === 'draft' ? 'selected' : '' }}>
+                                    Draft
+                                </option>
+                                <option value="published" {{ old('status', $post->status) === 'published' ? 'selected' : '' }}>
+                                    Published
+                                </option>
+                            </select>
+                            @error('status')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                            <div class="form-text">
+                                <strong>Draft:</strong> Post will be saved but not visible to visitors.<br>
+                                <strong>Published:</strong> Post will be immediately visible to visitors.
+                            </div>
+                        </div>
+
+                        <!-- Post Metadata -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Post Information</h6>
+                                        <p class="card-text mb-1">
+                                            <strong>Author:</strong> {{ $post->user->name }}
+                                        </p>
+                                        <p class="card-text mb-1">
+                                            <strong>Created:</strong> {{ $post->created_at->format('M j, Y \a\t g:i A') }}
+                                        </p>
+                                        <p class="card-text mb-1">
+                                            <strong>Last Updated:</strong> {{ $post->updated_at->format('M j, Y \a\t g:i A') }}
+                                        </p>
+                                        @if($post->published_at)
+                                            <p class="card-text mb-0">
+                                                <strong>Published:</strong> {{ $post->published_at->format('M j, Y \a\t g:i A') }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">URL Information</h6>
+                                        <p class="card-text mb-1">
+                                            <strong>Slug:</strong> <code>{{ $post->slug }}</code>
+                                        </p>
+                                        <p class="card-text mb-0">
+                                            <strong>Public URL:</strong><br>
+                                            <a href="{{ route('post.show', $post->slug) }}" target="_blank" class="text-break">
+                                                {{ route('post.show', $post->slug) }}
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Update Post
+                            </button>
+                            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <div class="ms-auto">
+                                <form action="{{ route('admin.posts.destroy', $post) }}" 
+                                      method="POST" 
+                                      class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this post? This action cannot be undone.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="bi bi-trash"></i> Delete Post
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    const originalSlug = slugInput ? slugInput.value : '';
+    let slugManuallyChanged = false;
+
+    // Function to generate slug from title
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '') // Remove special characters except spaces and hyphens
+            .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+            .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    }
+
+    // Track changes to slug field
+    if (slugInput) {
+        slugInput.addEventListener('input', function() {
+            slugManuallyChanged = this.value !== originalSlug;
+            
+            // Format the slug as user types
+            if (this.value) {
+                const formattedSlug = generateSlug(this.value);
+                if (this.value !== formattedSlug) {
+                    const cursorPosition = this.selectionStart;
+                    this.value = formattedSlug;
+                    this.setSelectionRange(cursorPosition, cursorPosition);
+                }
+            }
+
+            // Update warning message
+            const helpText = slugInput.parentNode.querySelector('.form-text');
+            if (helpText && slugManuallyChanged) {
+                helpText.innerHTML = `
+                    Current URL: <a href="{{ route('post.show', $post->slug) }}" target="_blank">{{ route('post.show', $post->slug) }}</a><br>
+                    <strong class="text-warning">Warning:</strong> Changing the slug will change the post's URL. This may break existing links.
+                `;
+            }
+        });
+
+        // Add button to regenerate slug from current title
+        const regenerateBtn = document.createElement('button');
+        regenerateBtn.type = 'button';
+        regenerateBtn.className = 'btn btn-sm btn-outline-secondary mt-2';
+        regenerateBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Regenerate from Title';
+        regenerateBtn.addEventListener('click', function() {
+            if (titleInput && titleInput.value.trim()) {
+                if (confirm('This will replace the current slug with one generated from the title. Are you sure?')) {
+                    slugInput.value = generateSlug(titleInput.value);
+                    slugManuallyChanged = true;
+                    slugInput.dispatchEvent(new Event('input'));
+                }
+            }
+        });
+        
+        slugInput.parentNode.appendChild(regenerateBtn);
+    }
+
+    // Auto-resize textarea based on content
+    const contentTextarea = document.getElementById('content');
+    if (contentTextarea) {
+        // Set initial height
+        contentTextarea.style.height = 'auto';
+        contentTextarea.style.height = (contentTextarea.scrollHeight) + 'px';
+        
+        contentTextarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+    
+    // Character counter for excerpt and auto-preview
+    const excerptTextarea = document.getElementById('excerpt');
+    const contentTextarea = document.getElementById('content');
+    const excerptPreview = document.getElementById('excerpt-preview');
+    const excerptPreviewText = document.getElementById('excerpt-preview-text');
+    
+    if (excerptTextarea) {
+        const maxLength = 500;
+        const counter = document.createElement('div');
+        counter.className = 'form-text text-end';
+        counter.style.marginTop = '0.25rem';
+        excerptTextarea.parentNode.appendChild(counter);
+        
+        function updateCounter() {
+            const remaining = maxLength - excerptTextarea.value.length;
+            counter.textContent = `${excerptTextarea.value.length}/${maxLength} characters`;
+            counter.className = remaining < 50 ? 'form-text text-end text-warning' : 'form-text text-end';
+        }
+        
+        function generateExcerpt(content, length = 160) {
+            // Strip HTML tags and get plain text
+            const plainText = content.replace(/<[^>]*>/g, '');
+            
+            // Remove extra whitespace
+            const cleanText = plainText.replace(/\s+/g, ' ').trim();
+            
+            // Truncate to specified length
+            if (cleanText.length <= length) {
+                return cleanText;
+            }
+            
+            // Find the last complete word within the length limit
+            const truncated = cleanText.substring(0, length);
+            const lastSpace = truncated.lastIndexOf(' ');
+            
+            if (lastSpace !== -1) {
+                return truncated.substring(0, lastSpace) + '...';
+            }
+            
+            return truncated + '...';
+        }
+        
+        function updateExcerptPreview() {
+            const hasExcerpt = excerptTextarea.value.trim().length > 0;
+            const hasContent = contentTextarea && contentTextarea.value.trim().length > 0;
+            
+            if (!hasExcerpt && hasContent && excerptPreview && excerptPreviewText) {
+                const autoExcerpt = generateExcerpt(contentTextarea.value);
+                excerptPreviewText.textContent = autoExcerpt;
+                excerptPreview.style.display = 'block';
+            } else if (excerptPreview) {
+                excerptPreview.style.display = 'none';
+            }
+        }
+        
+        excerptTextarea.addEventListener('input', function() {
+            updateCounter();
+            updateExcerptPreview();
+        });
+        
+        if (contentTextarea) {
+            contentTextarea.addEventListener('input', updateExcerptPreview);
+        }
+        
+        updateCounter();
+        updateExcerptPreview();
+    }
+});
+</script>
+@endsection
+
+@push('styles')
+@vite('resources/css/tag-management.css')
+@endpush
+
+@push('scripts')
+@vite('resources/js/tag-autocomplete.js')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tag autocomplete
+    const tagAutocomplete = new TagAutocomplete('#tags', {
+        searchUrl: '{{ route("tags.search") }}',
+        createUrl: '{{ route("tags.store") }}'
+    });
+
+    // Handle old input for tags if validation fails, otherwise load existing tags
+    @if(old('tags'))
+        const oldTags = @json(old('tags'));
+        if (Array.isArray(oldTags)) {
+            tagAutocomplete.setTags(oldTags);
+        }
+    @else
+        // Load existing tags from the post
+        const existingTags = @json($post->tags->map(fn($tag) => ['id' => $tag->id, 'name' => $tag->name]));
+        if (existingTags && existingTags.length > 0) {
+            tagAutocomplete.setTags(existingTags);
+        }
+    @endif
+});
+</script>
+@endpush

@@ -2,208 +2,114 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\WeatherService;
-use App\Services\WeatherConfigService;
-use Illuminate\Http\Request;
+use App\Models\WeatherCity;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
-use Exception;
-use InvalidArgumentException;
+use Illuminate\Http\Request;
 
 class WeatherController extends Controller
 {
-    // Don't inject WeatherService in constructor to avoid config validation issues
-    // Instead, resolve it when needed in methods
-
     /**
-     * Get weather widget configuration
+     * Get weather data for a random city (mocked OpenWeatherMap response)
      */
-    public function getConfig(): JsonResponse
+    public function getRandomWeather(): JsonResponse
     {
-        try {
-            // Try to get validated config first - this will throw if there are critical issues
-            $config = WeatherConfigService::getValidatedConfig();
+        // Simulate external API latency (250-750ms)
+        $latency = rand(250, 750);
+        usleep($latency * 1000); // Convert to microseconds
 
-            if (!$config['widget']['enabled']) {
-                return response()->json([
-                    'error' => 'Weather widget is disabled'
-                ], 503);
-            }
+        $city = WeatherCity::getRandomCity();
 
-            return response()->json([
-                'default_location' => $config['default_location'],
-                'widget' => [
-                    'auto_refresh_interval' => $config['widget']['auto_refresh_interval'],
-                    'show_detailed_info' => $config['widget']['show_detailed_info'],
-                    'temperature_unit' => $config['widget']['temperature_unit'],
-                ],
-            ]);
-
-        } catch (InvalidArgumentException $e) {
-            Log::error('Weather config validation error', [
-                'error' => $e->getMessage(),
-            ]);
-
-            return response()->json([
-                'error' => 'Weather configuration is not available'
-            ], 503);
-        } catch (Exception $e) {
-            Log::error('Weather config endpoint error', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return response()->json([
-                'error' => 'Weather configuration is not available'
-            ], 503);
+        if (! $city) {
+            return response()->json(['error' => 'No cities available'], 404);
         }
+
+        // Mock weather data similar to OpenWeatherMap API
+        $weatherData = $this->generateMockWeatherData($city);
+
+        return response()->json($weatherData);
     }
 
     /**
-     * Get current weather data for given coordinates
+     * Get weather data for multiple random cities
      */
-    public function getCurrentWeather(Request $request): JsonResponse
+    public function getMultipleRandomWeather(Request $request): JsonResponse
     {
-        $requestId = uniqid('weather_', true);
-        $startTime = microtime(true);
+        // Simulate external API latency (250-750ms)
+        $latency = rand(250, 750);
+        usleep($latency * 1000); // Convert to microseconds
 
-        Log::info('Weather API request received', [
-            'request_id' => $requestId,
-            'ip' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'params' => $request->all(),
-        ]);
+        $count = min($request->get('count', 5), 10); // Limit to 10 cities max
+        $cities = WeatherCity::getRandomCities($count);
 
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'lat' => 'required|numeric|between:-90,90',
-            'lon' => 'required|numeric|between:-180,180',
-        ], [
-            'lat.required' => 'Latitude is required',
-            'lat.numeric' => 'Latitude must be a valid number',
-            'lat.between' => 'Latitude must be between -90 and 90 degrees',
-            'lon.required' => 'Longitude is required',
-            'lon.numeric' => 'Longitude must be a valid number',
-            'lon.between' => 'Longitude must be between -180 and 180 degrees',
-        ]);
-
-        if ($validator->fails()) {
-            $duration = (microtime(true) - $startTime) * 1000;
-
-            Log::warning('Weather API validation failed', [
-                'request_id' => $requestId,
-                'errors' => $validator->errors()->toArray(),
-                'duration_ms' => round($duration, 2),
-            ]);
-
-            return response()->json([
-                'error' => 'Invalid coordinates provided',
-                'details' => $validator->errors()
-            ], 400);
+        if ($cities->isEmpty()) {
+            return response()->json(['error' => 'No cities available'], 404);
         }
 
-        $latitude = (float) $request->input('lat');
-        $longitude = (float) $request->input('lon');
+        $weatherData = $cities->map(function ($city) {
+            return $this->generateMockWeatherData($city);
+        });
 
-        try {
-            Log::debug('Fetching weather data', [
-                'request_id' => $requestId,
-                'lat' => $latitude,
-                'lon' => $longitude,
-            ]);
+        return response()->json($weatherData);
+    }
 
-            // Resolve WeatherService when needed to avoid constructor issues
-            $weatherService = app(WeatherService::class);
+    /**
+     * Generate mock weather data similar to OpenWeatherMap API response
+     */
+    private function generateMockWeatherData(WeatherCity $city): array
+    {
+        $weatherConditions = [
+            ['main' => 'Clear', 'description' => 'clear sky', 'icon' => '01d'],
+            ['main' => 'Clouds', 'description' => 'few clouds', 'icon' => '02d'],
+            ['main' => 'Clouds', 'description' => 'scattered clouds', 'icon' => '03d'],
+            ['main' => 'Clouds', 'description' => 'broken clouds', 'icon' => '04d'],
+            ['main' => 'Rain', 'description' => 'light rain', 'icon' => '10d'],
+            ['main' => 'Rain', 'description' => 'moderate rain', 'icon' => '10d'],
+            ['main' => 'Thunderstorm', 'description' => 'thunderstorm', 'icon' => '11d'],
+            ['main' => 'Snow', 'description' => 'light snow', 'icon' => '13d'],
+            ['main' => 'Mist', 'description' => 'mist', 'icon' => '50d'],
+        ];
 
-            // Fetch weather data using the service (with caching)
-            $weatherData = $weatherService->fetchWeatherData($latitude, $longitude);
+        $weather = $weatherConditions[array_rand($weatherConditions)];
+        $temp = rand(-10, 40); // Temperature in Celsius
+        $humidity = rand(30, 90);
+        $pressure = rand(990, 1030);
+        $windSpeed = rand(0, 20);
 
-            $duration = (microtime(true) - $startTime) * 1000;
-
-            Log::info('Weather API request successful', [
-                'request_id' => $requestId,
-                'lat' => $latitude,
-                'lon' => $longitude,
-                'location' => $weatherData['location'] ?? 'Unknown',
-                'temperature' => $weatherData['temperature'] ?? null,
-                'duration_ms' => round($duration, 2),
-            ]);
-
-            return response()->json($weatherData);
-
-        } catch (Exception $e) {
-            $duration = (microtime(true) - $startTime) * 1000;
-
-            Log::error('Weather API error in controller', [
-                'request_id' => $requestId,
-                'lat' => $latitude,
-                'lon' => $longitude,
-                'error' => $e->getMessage(),
-                'error_type' => get_class($e),
-                'duration_ms' => round($duration, 2),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            // Return appropriate error response based on exception message
-            if (str_contains($e->getMessage(), 'configuration error')) {
-                Log::critical('Weather service configuration error detected', [
-                    'request_id' => $requestId,
-                    'error' => $e->getMessage(),
-                ]);
-
-                return response()->json([
-                    'error' => 'Weather service is not properly configured'
-                ], 503);
-            }
-
-            if (str_contains($e->getMessage(), 'Location not found')) {
-                Log::info('Location not found for coordinates', [
-                    'request_id' => $requestId,
-                    'lat' => $latitude,
-                    'lon' => $longitude,
-                ]);
-
-                return response()->json([
-                    'error' => 'Location not found'
-                ], 404);
-            }
-
-            if (str_contains($e->getMessage(), 'rate limiting')) {
-                Log::warning('Weather API rate limit exceeded', [
-                    'request_id' => $requestId,
-                    'lat' => $latitude,
-                    'lon' => $longitude,
-                ]);
-
-                return response()->json([
-                    'error' => 'Weather service temporarily unavailable due to high demand'
-                ], 429);
-            }
-
-            if (str_contains($e->getMessage(), 'Invalid latitude') || str_contains($e->getMessage(), 'Invalid longitude')) {
-                Log::warning('Invalid coordinates provided to weather service', [
-                    'request_id' => $requestId,
-                    'lat' => $latitude,
-                    'lon' => $longitude,
-                ]);
-
-                return response()->json([
-                    'error' => 'Invalid coordinates provided'
-                ], 400);
-            }
-
-            // Generic error for other cases
-            Log::error('Unhandled weather service error', [
-                'request_id' => $requestId,
-                'lat' => $latitude,
-                'lon' => $longitude,
-                'error' => $e->getMessage(),
-            ]);
-
-            return response()->json([
-                'error' => 'Weather data is currently unavailable. Please try again later.'
-            ], 503);
-        }
+        return [
+            'coord' => [
+                'lon' => (float) $city->longitude,
+                'lat' => (float) $city->latitude,
+            ],
+            'weather' => [$weather],
+            'base' => 'stations',
+            'main' => [
+                'temp' => $temp,
+                'feels_like' => $temp + rand(-3, 3),
+                'temp_min' => $temp - rand(0, 5),
+                'temp_max' => $temp + rand(0, 5),
+                'pressure' => $pressure,
+                'humidity' => $humidity,
+            ],
+            'visibility' => rand(5000, 10000),
+            'wind' => [
+                'speed' => $windSpeed,
+                'deg' => rand(0, 360),
+            ],
+            'clouds' => [
+                'all' => rand(0, 100),
+            ],
+            'dt' => now()->timestamp,
+            'sys' => [
+                'type' => 2,
+                'id' => rand(1000, 9999),
+                'country' => $city->country_code,
+                'sunrise' => now()->startOfDay()->addHours(6)->timestamp,
+                'sunset' => now()->startOfDay()->addHours(18)->timestamp,
+            ],
+            'timezone' => $city->timezone ?? 0,
+            'id' => $city->id,
+            'name' => $city->name,
+            'cod' => 200,
+        ];
     }
 }

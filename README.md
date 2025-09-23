@@ -1,268 +1,291 @@
-# Valkey Demo - PHP Laravel Application
+# Cache Me, If You Can: Valkey Edition
 
-A modern Laravel application demonstrating high-performance caching, session management, leaderboard systems, and queue processing using **Valkey** (Redis-compatible) as the backend store.
+A modern, responsive blog application built with Laravel 10 and Bootstrap 5. This full-featured blog platform includes post management, categorization, tagging, and a weather widget displaying international city weather data.
 
-## 🚀 Features
+## Features
 
-This demo showcases four key Valkey use cases:
+### Core Blog Functionality
 
-### 🗄️ **Cache Management**
+- **Post Management**: Full CRUD operations for blog posts with rich content support
+- **User Authentication**: Secure login system with Laravel Breeze
+- **Categories & Tags**: Organize posts with categories and flexible tagging system
+- **SEO-Friendly URLs**: Automatic slug generation for posts and categories
+- **Draft System**: Save posts as drafts before publishing
+- **Responsive Design**: Mobile-first design using Bootstrap 5
 
-- Database query result caching
-- Application-level caching with TTL
-- Cache invalidation strategies
-- Multiple cache stores (database, Redis/Valkey)
+### Weather Widget
 
-### 🔐 **Session Management**
+- **International Weather**: Displays weather for 100+ cities across 10 countries
+- **Real-time Updates**: Auto-refreshing weather data every 5 minutes
+- **Interactive Interface**: Manual refresh capability and hover effects
+- **Local Time Display**: Shows local time for each displayed city
 
-- User session storage in Valkey
-- Secure session handling
-- Session persistence across requests
-- Configurable session lifetime
+### Technical Features
 
-### 🏆 **Leaderboard System**
+- **Laravel 10**: Modern PHP framework with Eloquent ORM
+- **Bootstrap 5**: Responsive CSS framework with custom styling
+- **Vite**: Fast build tool for asset compilation
+- **Laravel Telescope**: Application debugging and monitoring
+- **PHPUnit Testing**: Comprehensive test suite
 
-- Real-time scoring and rankings
-- Sorted sets for efficient leaderboards
-- User score tracking and updates
-- Top performers display
+## Project Structure
 
-### ⚡ **Queue Processing**
+```bash
+├── app/
+│   ├── Http/Controllers/     # Application controllers
+│   │   ├── HomeController.php       # Public blog pages
+│   │   ├── PostController.php       # Post CRUD operations
+│   │   ├── CategoryController.php   # Category management
+│   │   ├── TagController.php        # Tag management
+│   │   └── WeatherController.php    # Weather API endpoints
+│   ├── Models/              # Eloquent models
+│   │   ├── Post.php         # Blog post model
+│   │   ├── Category.php     # Post categories
+│   │   ├── Tag.php          # Post tags
+│   │   ├── User.php         # User authentication
+│   │   └── WeatherCity.php  # Weather cities data
+│   └── View/                # View composers and components
+├── database/
+│   ├── migrations/          # Database schema migrations
+│   └── seeders/            # Database seeders
+├── resources/
+│   ├── views/              # Blade templates
+│   │   ├── components/     # Reusable components
+│   │   ├── layouts/        # Layout templates
+│   │   └── posts/          # Post-related views
+│   └── js/                 # Frontend JavaScript
+├── routes/
+│   ├── web.php             # Web routes
+│   └── api.php             # API routes
+└── tests/                  # PHPUnit tests
+```
 
-- Background job processing
-- Asynchronous task execution
-- Job batching and retry mechanisms
-- Failed job handling
+## Installation
 
-## 🛠️ Tech Stack
+### Prerequisites
 
-- **Backend**: PHP 8.2+ with Laravel 12
-- **Frontend**: React 19 with TypeScript and Inertia.js
-- **Styling**: Tailwind CSS 4.0
-- **Cache/Session/Queue Store**: Valkey (Redis-compatible)
-- **Database**: SQLite (configurable)
-- **Build Tools**: Vite, Laravel Mix
-
-## 📋 Prerequisites
-
-- PHP 8.2 or higher
+- PHP 8.1 or higher
 - Composer
-- Node.js 18+ and npm
-- Valkey server (or Redis)
+- Node.js & npm
+- PostgreSQL or SQLite database
 
-## 🚀 Quick Start
+### Setup Steps
 
-### 1. Clone and Install Dependencies
+1. **Clone the repository**
 
-```bash
-git clone <repository-url>
-cd valkey-demo-php-laravel
-composer install
-npm install
-```
+   ```bash
+   git clone git@github.com:rlunar/valkey-demo-php-laravel.git 
+   cd valkey-demo-php-laravel
+   ```
 
-### 2. Environment Setup
+2. **Install PHP dependencies**
 
-```bash
-cp .env.example .env
-php artisan key:generate
-```
+   ```bash
+   composer install
+   ```
 
-### 3. Configure Valkey Connection
+3. **Install Node.js dependencies**
 
-Update your `.env` file with Valkey settings:
+   ```bash
+   pnpm add -g pnpm
+   ```
 
-```env
-# Cache Configuration
-CACHE_STORE=redis
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
-REDIS_PASSWORD=null
+   ```bash
+   pnpm install
+   ```
 
-# Session Configuration
-SESSION_DRIVER=redis
-SESSION_STORE=redis
+4. **Environment configuration**
 
-# Queue Configuration
-QUEUE_CONNECTION=redis
-REDIS_QUEUE_CONNECTION=default
-```
+   ```bash
+   cp .env.example .env
+   ```
 
-### 4. Database Setup
+   Configure environment variables in the `.env` file
 
-```bash
-php artisan migrate
-php artisan db:seed
-```
+   ```bash
+   APP_NAME=LaravelValkey
+   APP_ENV=local
+   APP_KEY=
+   APP_DEBUG=true
+   APP_URL=http://localhost
 
-### 5. Build Assets
+   LOG_CHANNEL=stack
+   LOG_DEPRECATIONS_CHANNEL=null
+   LOG_LEVEL=debug
 
-```bash
-npm run build
-# or for development
-npm run dev
-```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=laravel
+   DB_USERNAME=root
+   DB_PASSWORD=
 
-### 6. Start the Application
+   BROADCAST_DRIVER=log
+   CACHE_DRIVER=file
+   FILESYSTEM_DISK=local
+   QUEUE_CONNECTION=sync
+   SESSION_DRIVER=file
+   SESSION_LIFETIME=120
 
-```bash
-# Development mode with all services
-composer run dev
+   MEMCACHED_HOST=127.0.0.1
 
-# Or start services individually:
-php artisan serve              # Web server
-php artisan queue:work         # Queue worker
-php artisan pail              # Log monitoring
-npm run dev                   # Asset compilation
-```
+   REDIS_HOST=127.0.0.1
+   REDIS_PASSWORD=null
+   REDIS_PORT=6379
 
-Visit `http://localhost:8000` to see the application.
+   MAIL_MAILER=smtp
+   MAIL_HOST=mailpit
+   MAIL_PORT=1025
+   MAIL_USERNAME=null
+   MAIL_PASSWORD=null
+   MAIL_ENCRYPTION=null
+   MAIL_FROM_ADDRESS="hello@example.com"
+   MAIL_FROM_NAME="${APP_NAME}"
 
-## 🔧 Configuration
+   AWS_ACCESS_KEY_ID=
+   AWS_SECRET_ACCESS_KEY=
+   AWS_DEFAULT_REGION=us-east-1
+   AWS_BUCKET=
+   AWS_USE_PATH_STYLE_ENDPOINT=false
 
-### Cache Stores
+   PUSHER_APP_ID=
+   PUSHER_APP_KEY=
+   PUSHER_APP_SECRET=
+   PUSHER_HOST=
+   PUSHER_PORT=443
+   PUSHER_SCHEME=https
+   PUSHER_APP_CLUSTER=mt1
 
-The application supports multiple cache backends configured in `config/cache.php`:
+   VITE_APP_NAME="${APP_NAME}"
+   VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+   VITE_PUSHER_HOST="${PUSHER_HOST}"
+   VITE_PUSHER_PORT="${PUSHER_PORT}"
+   VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+   VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+   ```
 
-- **Database**: Uses `cache` table for persistence
-- **Redis/Valkey**: High-performance in-memory caching
-- **File**: Filesystem-based caching
-- **Array**: In-memory caching for testing
+   ```bash
+   php artisan key:generate
+   ```
 
-### Session Management
+5. **Database setup**
 
-Session configuration in `config/session.php`:
+   ```bash
+   php artisan migrate
+   ```
 
-- **Driver**: Database, Redis/Valkey, or file-based
-- **Lifetime**: Configurable session timeout
-- **Security**: HTTPS-only, HTTP-only, and SameSite options
+   ```bash
+   php artisan db:seed
+   ```
 
-### Queue System
+6. **Build assets**
 
-Queue configuration in `config/queue.php`:
+   ```bash
+   pnpm run build
+   ```
 
-- **Database**: Persistent job storage
-- **Redis/Valkey**: High-performance job processing
-- **Sync**: Immediate job execution for development
-- **SQS**: AWS Simple Queue Service integration
+   or for development
 
-## 📊 Demo Features
+   ```bash
+   pnpm run dev
+   ```
 
-### Cache Examples
+7. **Start the application**
 
-- **Page Caching**: Frequently accessed pages cached for faster loading
-- **Query Caching**: Database query results cached with automatic invalidation
-- **API Response Caching**: External API calls cached to reduce latency
+   ```bash
+   php artisan serve
+   ```
 
-### Session Examples
+Visit `http://localhost:8000` to view the blog.
 
-- **User Authentication**: Secure login/logout with session persistence
-- **Shopping Cart**: Session-based cart management
-- **User Preferences**: Personalized settings stored in sessions
+## Usage
 
-### Leaderboard Examples
+### Public Features
 
-- **Gaming Scores**: Real-time player rankings
-- **User Activity**: Most active users leaderboard
-- **Performance Metrics**: Top performers by various criteria
+- **Homepage**: Browse published blog posts with pagination
+- **Post Reading**: View individual posts with full content and metadata
+- **Categories**: Browse posts by category
+- **Tags**: Filter posts by tags
+- **Popular Posts**: View most popular content
+- **Weather Widget**: Check weather for international cities
 
-### Queue Examples
+### Admin Features (Authentication Required)
 
-- **Email Processing**: Asynchronous email sending
-- **Image Processing**: Background image optimization
-- **Data Import**: Large dataset processing in background
-- **Report Generation**: Heavy computation tasks
+- **Post Management**: Create, edit, and delete blog posts
+- **Category Management**: Organize posts into categories
+- **Tag Management**: Create and manage post tags
+- **Draft System**: Save posts as drafts before publishing
 
-## 🧪 Testing
+### API Endpoints
+
+- `GET /api/weather/random?count=5` - Get weather for multiple random cities
+- `GET /api/weather/single` - Get weather for one random city
+
+## Database Schema
+
+### Core Tables
+
+- **users**: User authentication and profiles
+- **posts**: Blog posts with content, metadata, and relationships
+- **categories**: Post categorization system
+- **tags**: Flexible tagging system
+- **weather_cities**: International cities for weather widget
+
+### Key Relationships
+
+- Posts belong to Users (author relationship)
+- Posts belong to Categories
+- Posts have many Tags (many-to-many)
+- Weather cities are independent entities
+
+## Testing
+
+Run the comprehensive test suite:
 
 ```bash
 # Run all tests
 php artisan test
 
-# Run specific test suites
-php artisan test --testsuite=Feature
-php artisan test --testsuite=Unit
+# Run specific test files
+php artisan test tests/Feature/PostTest.php
 
 # Run with coverage
 php artisan test --coverage
 ```
 
-## 📈 Performance Monitoring
+## Development
 
-The application includes built-in monitoring:
-
-- **Laravel Pail**: Real-time log monitoring
-- **Queue Monitoring**: Job processing statistics
-- **Cache Hit Rates**: Cache performance metrics
-- **Session Analytics**: User session insights
-
-## 🔍 Development Tools
-
-### Available Commands
+### Asset Development
 
 ```bash
-# Development server with all services
-composer run dev
+# Watch for changes during development
+pnpm run dev
 
-# Development with SSR support
-composer run dev:ssr
+# Build for production
+pnpm run build
+```
 
-# Code formatting
-npm run format
-composer run format
+### Database Management
 
-# Linting
-npm run lint
-php artisan pint
+```bash
+# Create new migration
+php artisan make:migration create_table_name
 
-# Type checking
-npm run types
+# Run migrations
+php artisan migrate
+
+# Rollback migrations
+php artisan migrate:rollback
 ```
 
 ### Debugging
 
-- **Laravel Telescope**: Application debugging (install separately)
-- **Laravel Debugbar**: Request/response debugging
-- **Pail Logs**: Real-time application logs
-- **Queue Dashboard**: Job monitoring interface
+Laravel Telescope is included for application monitoring:
 
-## 🚀 Deployment
+- Visit `/telescope` when running in local environment
+- Monitor database queries, requests, and performance
 
-### Production Setup
-
-1. **Environment Configuration**:
-
-    ```bash
-    APP_ENV=production
-    APP_DEBUG=false
-    CACHE_STORE=redis
-    SESSION_DRIVER=redis
-    QUEUE_CONNECTION=redis
-    ```
-
-2. **Optimize Application**:
-
-    ```bash
-    php artisan config:cache
-    php artisan route:cache
-    php artisan view:cache
-    npm run build
-    ```
-
-3. **Queue Workers**:
-    ```bash
-    php artisan queue:work --daemon
-    ```
-
-### Docker Deployment
-
-```dockerfile
-# Example Dockerfile structure
-FROM php:8.2-fpm
-# Install dependencies, copy files, configure services
-```
-
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -270,24 +293,14 @@ FROM php:8.2-fpm
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## Security
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- CSRF protection on all forms
+- XSS prevention in content display
+- Authentication middleware on admin routes
+- Input validation and sanitization
+- Secure password hashing with Laravel's built-in system
 
-## 🆘 Support
+## License
 
-- **Documentation**: [Laravel Docs](https://laravel.com/docs)
-- **Valkey**: [Valkey Documentation](https://valkey.io/docs/)
-- **Issues**: [GitHub Issues](../../issues)
-- **Discussions**: [GitHub Discussions](../../discussions)
-
-## 🙏 Acknowledgments
-
-- Laravel Framework team
-- Valkey project contributors
-- React and Inertia.js communities
-- Tailwind CSS team
-
----
-
-**Built with ❤️ using Laravel, React, and Valkey**
+This project is open-sourced software licensed under the [BSD 3-Clause License](https://opensource.org/license/bsd-3-clause).

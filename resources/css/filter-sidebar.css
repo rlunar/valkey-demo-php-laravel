@@ -1,0 +1,130 @@
+/* Filter Sidebar Styles */
+.filter-sidebar {
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.filter-sidebar .filter-section {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1rem;
+}
+
+.filter-sidebar .filter-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.filter-sidebar .list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+.filter-sidebar .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.filter-sidebar .list-group-item.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.filter-sidebar .list-group-item.active .badge {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Tag Cloud Styles */
+.tag-cloud {
+    line-height: 2;
+}
+
+.tag-cloud .badge {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.tag-cloud .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Active Filters */
+.active-filters .bg-primary,
+.active-filters .bg-secondary {
+    transition: all 0.2s ease;
+}
+
+.active-filters .bg-primary:hover,
+.active-filters .bg-secondary:hover {
+    opacity: 0.8;
+}
+
+/* Related Posts Styles */
+.related-posts .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.related-posts .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.related-posts .stretched-link:hover {
+    color: #0d6efd !important;
+}
+
+/* Category Badge Styles */
+.category-badge {
+    transition: all 0.2s ease;
+}
+
+.category-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none !important;
+}
+
+/* Tag List Styles */
+.tag-list .badge {
+    transition: all 0.2s ease;
+}
+
+.tag-list .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-sidebar {
+        position: static;
+        max-height: none;
+        margin-bottom: 2rem;
+    }
+    
+    .related-posts .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Badge size variations */
+.badge-xs {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.badge-sm {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.badge-md {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
+
+.badge-lg {
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+}
