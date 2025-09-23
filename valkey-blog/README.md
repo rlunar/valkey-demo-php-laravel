@@ -1,66 +1,228 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Cache Me, If You Can: Valkey Edition
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern, responsive blog application built with Laravel 10 and Bootstrap 5. This full-featured blog platform includes post management, categorization, tagging, and a weather widget displaying international city weather data.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Core Blog Functionality
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Post Management**: Full CRUD operations for blog posts with rich content support
+- **User Authentication**: Secure login system with Laravel Breeze
+- **Categories & Tags**: Organize posts with categories and flexible tagging system
+- **SEO-Friendly URLs**: Automatic slug generation for posts and categories
+- **Draft System**: Save posts as drafts before publishing
+- **Responsive Design**: Mobile-first design using Bootstrap 5
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Weather Widget
 
-## Learning Laravel
+- **International Weather**: Displays weather for 100+ cities across 10 countries
+- **Real-time Updates**: Auto-refreshing weather data every 5 minutes
+- **Interactive Interface**: Manual refresh capability and hover effects
+- **Local Time Display**: Shows local time for each displayed city
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Technical Features
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Laravel 10**: Modern PHP framework with Eloquent ORM
+- **Bootstrap 5**: Responsive CSS framework with custom styling
+- **Vite**: Fast build tool for asset compilation
+- **Laravel Telescope**: Application debugging and monitoring
+- **PHPUnit Testing**: Comprehensive test suite
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Project Structure
 
-## Laravel Sponsors
+```
+├── app/
+│   ├── Http/Controllers/     # Application controllers
+│   │   ├── HomeController.php       # Public blog pages
+│   │   ├── PostController.php       # Post CRUD operations
+│   │   ├── CategoryController.php   # Category management
+│   │   ├── TagController.php        # Tag management
+│   │   └── WeatherController.php    # Weather API endpoints
+│   ├── Models/              # Eloquent models
+│   │   ├── Post.php         # Blog post model
+│   │   ├── Category.php     # Post categories
+│   │   ├── Tag.php          # Post tags
+│   │   ├── User.php         # User authentication
+│   │   └── WeatherCity.php  # Weather cities data
+│   └── View/                # View composers and components
+├── database/
+│   ├── migrations/          # Database schema migrations
+│   └── seeders/            # Database seeders
+├── resources/
+│   ├── views/              # Blade templates
+│   │   ├── components/     # Reusable components
+│   │   ├── layouts/        # Layout templates
+│   │   └── posts/          # Post-related views
+│   └── js/                 # Frontend JavaScript
+├── routes/
+│   ├── web.php             # Web routes
+│   └── api.php             # API routes
+└── tests/                  # PHPUnit tests
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
 
-### Premium Partners
+### Prerequisites
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- PHP 8.1 or higher
+- Composer
+- Node.js & npm
+- MySQL or SQLite database
+
+### Setup Steps
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd laravel-bootstrap-blog
+   ```
+
+2. **Install PHP dependencies**
+
+   ```bash
+   composer install
+   ```
+
+3. **Install Node.js dependencies**
+
+   ```bash
+   npm install
+   ```
+
+4. **Environment configuration**
+
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+5. **Database setup**
+
+   ```bash
+   # Configure database in .env file
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+6. **Build assets**
+
+   ```bash
+   npm run build
+   # or for development
+   npm run dev
+   ```
+
+7. **Start the application**
+   ```bash
+   php artisan serve
+   ```
+
+Visit `http://localhost:8000` to view the blog.
+
+## Usage
+
+### Public Features
+
+- **Homepage**: Browse published blog posts with pagination
+- **Post Reading**: View individual posts with full content and metadata
+- **Categories**: Browse posts by category
+- **Tags**: Filter posts by tags
+- **Popular Posts**: View most popular content
+- **Weather Widget**: Check weather for international cities
+
+### Admin Features (Authentication Required)
+
+- **Post Management**: Create, edit, and delete blog posts
+- **Category Management**: Organize posts into categories
+- **Tag Management**: Create and manage post tags
+- **Draft System**: Save posts as drafts before publishing
+
+### API Endpoints
+
+- `GET /api/weather/random?count=5` - Get weather for multiple random cities
+- `GET /api/weather/single` - Get weather for one random city
+
+## Database Schema
+
+### Core Tables
+
+- **users**: User authentication and profiles
+- **posts**: Blog posts with content, metadata, and relationships
+- **categories**: Post categorization system
+- **tags**: Flexible tagging system
+- **weather_cities**: International cities for weather widget
+
+### Key Relationships
+
+- Posts belong to Users (author relationship)
+- Posts belong to Categories
+- Posts have many Tags (many-to-many)
+- Weather cities are independent entities
+
+## Testing
+
+Run the comprehensive test suite:
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test files
+php artisan test tests/Feature/PostTest.php
+
+# Run with coverage
+php artisan test --coverage
+```
+
+## Development
+
+### Asset Development
+
+```bash
+# Watch for changes during development
+npm run dev
+
+# Build for production
+npm run build
+```
+
+### Database Management
+
+```bash
+# Create new migration
+php artisan make:migration create_table_name
+
+# Run migrations
+php artisan migrate
+
+# Rollback migrations
+php artisan migrate:rollback
+```
+
+### Debugging
+
+Laravel Telescope is included for application monitoring:
+
+- Visit `/telescope` when running in local environment
+- Monitor database queries, requests, and performance
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Code of Conduct
+## Security
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- CSRF protection on all forms
+- XSS prevention in content display
+- Authentication middleware on admin routes
+- Input validation and sanitization
+- Secure password hashing with Laravel's built-in system
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
