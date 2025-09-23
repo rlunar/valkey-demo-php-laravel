@@ -88,14 +88,14 @@ class PostSeeder extends Seeder
         }
 
         // Create additional random posts
-        Post::factory(25)->create()->each(function ($post) use ($tags) {
+        Post::factory(250)->create()->each(function ($post) use ($tags) {
             // Attach random tags to each post (1-5 tags per post)
             $randomTags = $tags->random(rand(1, 5));
             $post->tags()->attach($randomTags->pluck('id'));
         });
 
         // Create some draft posts
-        Post::factory(8)->draft()->create()->each(function ($post) use ($tags) {
+        Post::factory(80)->draft()->create()->each(function ($post) use ($tags) {
             $randomTags = $tags->random(rand(1, 3));
             $post->tags()->attach($randomTags->pluck('id'));
         });
