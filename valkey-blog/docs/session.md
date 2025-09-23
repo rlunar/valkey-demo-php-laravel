@@ -28,9 +28,9 @@ Change your `.env` file from database to Valkey sessions:
 SESSION_DRIVER=redis
 
 # Keep existing Valkey configuration
-Valkey_HOST=127.0.0.1
-Valkey_PASSWORD=null
-Valkey_PORT=6379
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
 ```
 
 ### Step 2: Test the Migration
