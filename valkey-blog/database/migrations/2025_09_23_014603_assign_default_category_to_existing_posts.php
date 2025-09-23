@@ -13,14 +13,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Find or create a default "Uncategorized" category
-        $defaultCategory = Category::firstOrCreate(
-            ['name' => 'Uncategorized'],
-            [
-                'description' => 'Posts that have not been assigned to a specific category',
-                'color' => '#6c757d'
-            ]
-        );
+        // Use an existing predefined category instead of creating "Uncategorized"
+        // Try to find a suitable default category from the predefined ones
+        $defaultCategory = Category::whereIn('name', [
+            'Development', 'Performance', 'Architecture', 'Redis Compatibility',
+            'Open Source', 'Tutorials', 'News & Updates', 'Community'
+        ])->first();
+
+        // If no predefined categories exist yet, create a temporary one that will be cleaned up
+        if (!$defaultCategory) {
+            $defaultCategory = Category::firstOrCreate(
+                ['name' => 'Development'],
+                [
+                    'description' => 'Software development tutorials, best practices, and coding insights',
+                    'color' => '#007bff'
+                ]
+            );
+        }
 
         // Assign the default category to all posts that don't have a category
         Post::whereNull('category_id')->update(['category_id' => $defaultCategory->id]);
@@ -31,18 +40,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Find the "Uncategorized" category
-        $uncategorizedCategory = Category::where('name', 'Uncategorized')->first();
-        
-        if ($uncategorizedCategory) {
-            // Set category_id to null for posts that were assigned to "Uncategorized"
-            Post::where('category_id', $uncategorizedCategory->id)->update(['category_id' => null]);
-            
-            // Optionally delete the "Uncategorized" category if it was created by this migration
-            // Only delete if it has no posts assigned (in case other posts were manually assigned to it)
-            if ($uncategorizedCategory->posts()->count() === 0) {
-                $uncategorizedCategory->delete();
-            }
-        }
+        // Set category_id to null for posts that were assigned by this migration
+        // Since we're using predefined categories, we don't delete them in rollback
+        Post::whereNotNull('category_id')->update(['category_id' => null]);
     }
 };

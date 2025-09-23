@@ -38,7 +38,11 @@ class PostFactory extends Factory
             'status' => $status,
             'published_at' => $status === 'published' ? $this->faker->dateTimeBetween('-1 year', 'now') : null,
             'user_id' => User::factory(),
-            'category_id' => Category::factory(),
+            'category_id' => function () {
+                // Use existing categories instead of creating new ones
+                $categories = Category::pluck('id')->toArray();
+                return $categories ? $this->faker->randomElement($categories) : Category::factory();
+            },
         ];
     }
 

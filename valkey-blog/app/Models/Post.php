@@ -23,6 +23,7 @@ class Post extends Model
         'published_at',
         'user_id',
         'category_id',
+        'view_count',
     ];
 
     protected $casts = [
@@ -61,6 +62,42 @@ class Post extends Model
         return $query->where('status', 'published')
                     ->whereNotNull('published_at')
                     ->where('published_at', '<=', now());
+    }
+
+    /**
+     * Scope a query to order posts by popularity (view count).
+     */
+    public function scopePopular(Builder $query): Builder
+    {
+        return $query->orderBy('view_count', 'desc');
+    }
+
+    /**
+     * Increment the view count for this post.
+     */
+    public function incrementViewCount(): void
+    {
+        $this->increment('view_count');
+    }
+
+    /**
+     * Increment view count without triggering model events or updating timestamps.
+     */
+    public function incrementViewCountQuietly(): void
+    {
+        $this->incrementQuietly('view_count');
+    }
+
+    /**
+     * Get the most popular posts by view count.
+     */
+    public static function getMostPopular(int $limit = 10)
+    {
+        return static::published()
+            ->with(['user', 'category', 'tags'])
+            ->popular()
+            ->limit($limit)
+            ->get();
     }
 
     /**

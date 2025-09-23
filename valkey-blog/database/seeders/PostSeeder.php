@@ -88,6 +88,7 @@ class PostSeeder extends Seeder
         }
 
         // Create additional random posts
+        // Note: PostFactory now uses existing categories instead of creating new ones
         Post::factory(250)->create()->each(function ($post) use ($tags) {
             // Attach random tags to each post (1-5 tags per post)
             $randomTags = $tags->random(rand(1, 5));

@@ -9,6 +9,9 @@ class CategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * 
+     * Creates exactly 8 predefined categories for the blog.
+     * No additional categories should be created by factories or other seeders.
      */
     public function run(): void
     {

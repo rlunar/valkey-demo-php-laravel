@@ -1,4 +1,9 @@
-@props(['categories', 'popularTags', 'selectedCategory' => null, 'selectedTag' => null])
+@props(['categories', 'popularTags', 'popularPosts' => collect(), 'selectedCategory' => null, 'selectedTag' => null])
+
+<!-- Popular Posts Sidebar -->
+@if($popularPosts->count() > 0)
+    <x-popular-posts-sidebar :popularPosts="$popularPosts" />
+@endif
 
 <div class="filter-sidebar bg-light p-4 rounded shadow-sm">
     <h5 class="mb-3">

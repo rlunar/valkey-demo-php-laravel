@@ -64,6 +64,9 @@ class HomeController extends Controller
 
         $popularTags = Tag::popular(20)->get();
 
+        // Get popular posts for sidebar (top 10 most viewed)
+        $popularPosts = Post::getMostPopular(10);
+
         // Get current filters for display
         $currentCategory = null;
         $currentTag = null;
@@ -87,10 +90,39 @@ class HomeController extends Controller
             'posts', 
             'categories', 
             'popularTags', 
+            'popularPosts',
             'currentCategory', 
             'currentTag', 
             'currentTags'
         ));
+    }
+
+    /**
+     * Display popular posts ordered by view count.
+     */
+    public function popular(Request $request): View
+    {
+        $posts = Post::published()
+            ->with(['user', 'category', 'tags'])
+            ->popular()
+            ->paginate(10);
+
+        // Get categories and tags for filtering sidebar
+        $categories = Category::whereHas('posts', function ($query) {
+                $query->where('status', 'published');
+            })
+            ->withCount(['posts' => function ($query) {
+                $query->where('status', 'published');
+            }])
+            ->orderBy('name')
+            ->get();
+
+        $popularTags = Tag::popular(20)->get();
+
+        // Get popular posts for sidebar (top 10 most viewed)
+        $popularPosts = Post::getMostPopular(10);
+
+        return view('popular', compact('posts', 'categories', 'popularTags', 'popularPosts'));
     }
 
     /**
@@ -102,6 +134,9 @@ class HomeController extends Controller
             ->with(['user', 'category', 'tags'])
             ->where('slug', $slug)
             ->firstOrFail();
+
+        // Increment view count
+        $post->incrementViewCountQuietly();
 
         // Get related posts
         $relatedPosts = $post->getRelatedPosts(5);

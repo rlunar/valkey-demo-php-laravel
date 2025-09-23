@@ -26,6 +26,9 @@
             <p class="blog-post-meta">
                 {{ $post->published_at->format('F j, Y') }} by 
                 <strong>{{ $post->user->name }}</strong>
+                <span class="text-muted ms-3">
+                    <i class="fas fa-eye me-1"></i>{{ number_format($post->view_count) }} {{ Str::plural('view', $post->view_count) }}
+                </span>
             </p>
 
             <!-- Post Content -->

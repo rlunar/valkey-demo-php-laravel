@@ -27,6 +27,9 @@
             <div class="mt-3">
                 <small class="text-muted">
                     By <strong>{{ $post->user->name }}</strong> on {{ $post->published_at->format('M d, Y') }}
+                    <span class="ms-3">
+                        <i class="fas fa-eye me-1"></i>{{ number_format($post->view_count) }}
+                    </span>
                 </small>
             </div>
         </div>
@@ -70,6 +73,9 @@
                 @if($post->user->bio)
                     <span class="text-muted"> - {{ Str::limit($post->user->bio, 50) }}</span>
                 @endif
+                <span class="ms-3">
+                    <i class="fas fa-eye me-1"></i>{{ number_format($post->view_count) }}
+                </span>
             </small>
         </div>
     </div>

@@ -78,6 +78,7 @@
         <x-filter-sidebar 
             :categories="$categories" 
             :popularTags="$popularTags" 
+            :popularPosts="$popularPosts"
             :currentCategory="$currentCategory" 
             :currentTag="$currentTag" 
             :currentTags="$currentTags" 

@@ -30,6 +30,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Individual post view using slug for SEO-friendly URLs
 Route::get('/post/{slug}', [HomeController::class, 'show'])->name('post.show');
 
+// Popular posts page
+Route::get('/popular', [HomeController::class, 'popular'])->name('popular');
+
 // Category routes
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('categories.show');
