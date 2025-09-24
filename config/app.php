@@ -61,6 +61,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | API Proxy Prefix
+    |--------------------------------------------------------------------------
+    |
+    | This value is used to prefix API calls when running in environments
+    | like VSCode web with CloudFront that require a proxy prefix.
+    | Leave empty for normal environments.
+    |
+    */
+
+    'api_proxy_prefix' => env('API_PROXY_PREFIX', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

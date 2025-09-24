@@ -140,7 +140,10 @@
         errorEl.classList.add('d-none');
 
         try {
-            const response = await fetch('/api/weather/random?count=5', {
+            const apiPrefix = '{{ config('app.api_proxy_prefix', '') }}';
+            const apiUrl = `${apiPrefix}/api/weather/random?count=5`;
+
+            const response = await fetch(apiUrl, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
